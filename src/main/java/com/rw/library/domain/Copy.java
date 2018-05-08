@@ -1,32 +1,54 @@
 package com.rw.library.domain;
-
-import com.rw.library.domain.definitions.STATUS;
-import lombok.*;
-
+import com.rw.library.domain.definitions.Status;
 import javax.persistence.*;
-import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
 @Entity(name = "copies")
-public class Copy implements Serializable {
+public class Copy extends AbstractDomainClass {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    public Copy() {
+    }
 
-    private STATUS status;
-
+    public Copy(Long id, LocalDateTime dateCreated, Status status, Book book) {
+        super(id, dateCreated);
+        this.status = status;
+        this.book = book;
+    }
+    @Enumerated(EnumType.STRING)
+    private Status status;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
+    @OneToMany(
+            targetEntity = Borrow.class,
+            mappedBy = "copy",
+            fetch = FetchType.LAZY
+    )
+    private List<Borrow> borrows = new LinkedList<>();
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
+    }
 
     @Override
     public String toString() {
         return "Copy{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", status=" + status +
                 '}';
     }
@@ -41,7 +63,6 @@ public class Copy implements Serializable {
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(getId());
+        return Objects.hash(getId(), getStatus());
     }
 }

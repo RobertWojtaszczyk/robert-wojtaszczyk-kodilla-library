@@ -9,7 +9,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-@Transactional
+//@Transactional
 @Service
 public class BookServiceImpl implements BookService {
 
@@ -39,8 +39,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book saveOrUpdate(Book domainObject) {
-        return bookRepository.save(domainObject);
+    public Book saveOrUpdate(final Book book) {
+        return bookRepository.save(book);
     }
 
     @Override

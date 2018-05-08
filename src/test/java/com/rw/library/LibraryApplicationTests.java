@@ -1,8 +1,10 @@
 package com.rw.library;
 
+import com.rw.library.controller.LibraryController;
 import com.rw.library.domain.Book;
 import com.rw.library.domain.Copy;
-import com.rw.library.domain.definitions.STATUS;
+import com.rw.library.domain.CopyDto;
+import com.rw.library.domain.definitions.Status;
 import com.rw.library.service.BookServiceImpl;
 import com.rw.library.service.CopyServiceImpl;
 import org.junit.Assert;
@@ -12,16 +14,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Transactional
 public class LibraryApplicationTests {
 
     @Autowired
     private BookServiceImpl bookService;
     @Autowired
     private CopyServiceImpl copyService;
+//    @Autowired
+//    private DomainMapper domainMapper;
+    @Autowired
+    private LibraryController libraryController;
 
 	@Test
 	public void contextLoads() {
@@ -38,22 +46,22 @@ public class LibraryApplicationTests {
 
         Copy copy1 = new Copy();
         copy1.setBook(book1);
-        copy1.setStatus(STATUS.OK);
+        copy1.setStatus(Status.OK);
         copy1 = copyService.saveOrUpdate(copy1);
 
         //When
         List<Book> books = bookService.listAll();
         List<Copy> copies = copyService.listAll();
+//        List<CopyDto> copyDtoList = domainMapper.mapToCopyDtoList(copyService.listAll());  // org.hibernate.LazyInitializationException: could not initialize proxy - no Session
+        List<CopyDto> copyDtoList = libraryController.getCopies(); // org.hibernate.LazyInitializationException: could not initialize proxy - no Session
 
         //Then
-//        Assert.assertEquals(1, books.size());
-//        Assert.assertEquals(1, copies.size());
+        Assert.assertEquals(1, books.size());
+        Assert.assertEquals(1, copies.size());
+        Assert.assertEquals(1, copies.get(0).getBook().getId().intValue());
 
         books.forEach(System.out::println);
         copies.forEach(System.out::println);
-
-        System.out.println(copy1.getBook());
-//        System.out.println(copies.get(0).getBook().getId()); // org.hibernate.LazyInitializationException: could not initialize proxy - no Session
+        copyDtoList.forEach(System.out::println);
     }
-
 }

@@ -1,28 +1,25 @@
 package com.rw.library.domain;
 
-import lombok.*;
-
 import javax.persistence.*;
-import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
 @Entity(name = "books")
-public class Book implements Serializable {
+public class Book extends AbstractDomainClass {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    public Book() {
+    }
+
+    public Book(Long id, LocalDateTime dateCreated, String title, String author) {
+        super(id, dateCreated);
+        this.title = title;
+        this.author = author;
+    }
 
     private String title;
-
     private String author;
-
-
     @OneToMany(
             targetEntity = Copy.class,
             mappedBy = "book",
@@ -30,10 +27,34 @@ public class Book implements Serializable {
     )
     private Set<Copy> copies = new HashSet<>();
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public Set<Copy> getCopies() {
+        return copies;
+    }
+
+    public void setCopies(Set<Copy> copies) {
+        this.copies = copies;
+    }
+
     @Override
     public String toString() {
         return "Book{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", title='" + title + '\'' +
                 ", author='" + author + '\'' +
                 '}';
@@ -51,7 +72,6 @@ public class Book implements Serializable {
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(getId(), getTitle(), getAuthor());
+        return Objects.hash(getAuthor());
     }
 }
