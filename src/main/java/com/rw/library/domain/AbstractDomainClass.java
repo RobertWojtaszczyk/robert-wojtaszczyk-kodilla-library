@@ -17,9 +17,9 @@ public class AbstractDomainClass implements DomainObject {
     @Id
     @GeneratedValue
     private Long id;
-/*    @Version
-    private Integer version;*/
+    @Column(name = "created_on")
     private LocalDateTime dateCreated;
+    @Column(name = "updated_on")
     private LocalDateTime lastUpdated;
 
     public Long getId() {
@@ -29,14 +29,6 @@ public class AbstractDomainClass implements DomainObject {
     public void setId(Long id) {
         this.id = id;
     }
-
-/*    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
-    }*/
 
     public LocalDateTime getDateCreated() {
         return dateCreated;

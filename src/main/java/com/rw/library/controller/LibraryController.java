@@ -28,9 +28,14 @@ public class LibraryController {
     @Autowired
     private DomainMapper domainMapper;
 
-    @RequestMapping(method = RequestMethod.GET, value = "/getAvaCopies")
+    @RequestMapping(method = RequestMethod.GET, value = "/getAvailableCopies")
     public List<CopyDto> getAvailableCopies(@RequestParam Long book_id) {
         return domainMapper.mapToListAvailableCopies(book_id);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/getAvailableCopiesSQL")
+    public List<CopyDto> getAvailableCopiesSQL(@RequestParam Long book_id) {
+        return domainMapper.mapToCopyDtoList(copyService.getListOfAvailableCopies(book_id));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getBooks")

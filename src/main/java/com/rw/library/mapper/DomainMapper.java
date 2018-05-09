@@ -182,7 +182,7 @@ public class DomainMapper {
                 .collect(Collectors.toList());
     }
 
-    public List<BorrowDto> getBooksToReturn(final Long reader_id) {
+    private List<BorrowDto> getBooksToReturn(final Long reader_id) {
         return borrowService.findAllByReaderAndReturnDateIsNull(readerService.getById(reader_id)).stream()
                 .map(this::mapToBorrowDto)
                 .collect(Collectors.toList());

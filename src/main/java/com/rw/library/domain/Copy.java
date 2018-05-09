@@ -6,6 +6,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+@NamedNativeQuery(
+        name = "Copy.getListOfAvailableCopies",
+        query = "select c.* from copies c left outer join borrows b on c.id = b.copy_id and b.returned_on is null where c.book_id = :BOOK_ID and b.borrowed_on is null",
+        resultClass = Copy.class
+)
+
 @Entity(name = "copies")
 public class Copy extends AbstractDomainClass {
 

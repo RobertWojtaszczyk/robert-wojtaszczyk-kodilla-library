@@ -27,6 +27,7 @@ public class Book extends AbstractDomainClass {
     )
     private Set<Copy> copies = new HashSet<>();
 
+
     public String getTitle() {
         return title;
     }

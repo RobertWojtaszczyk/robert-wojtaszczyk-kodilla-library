@@ -1,9 +1,6 @@
 package com.rw.library.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -22,7 +19,9 @@ public class Borrow extends AbstractDomainClass {
         this.copy = copy;
     }
 
+    @Column(name = "borrowed_on")
     private LocalDate borrowDate;
+    @Column(name = "returned_on")
     private LocalDate returnDate;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reader_id")
