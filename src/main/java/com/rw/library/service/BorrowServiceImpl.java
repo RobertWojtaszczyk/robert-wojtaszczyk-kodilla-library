@@ -7,8 +7,10 @@ import com.rw.library.repository.BorrowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import static java.util.Optional.ofNullable;
 
 @Service
 public class BorrowServiceImpl implements BorrowService {
@@ -29,24 +31,24 @@ public class BorrowServiceImpl implements BorrowService {
 
     @Override
     public Borrow getById(Long id) {
-        return borrowRepository.findOne(id);
+        return ofNullable(borrowRepository.findOne(id)).orElse(new Borrow());
     }
 
     @Override
+    @Transactional
     public Borrow saveOrUpdate(Borrow domainObject) {
         return borrowRepository.save(domainObject);
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         borrowRepository.delete(id);
     }
 
     @Override
     public List<Borrow> findAllByCopyAndReturnDateIsNull(Copy copy) {
-        List<Borrow> borrows = new ArrayList<>();
-        borrowRepository.findAllByCopyAndReturnDateIsNull(copy).forEach(borrows::add);
-        return borrows;
+        return new ArrayList<>(borrowRepository.findAllByCopyAndReturnDateIsNull(copy));
     }
 
     @Override

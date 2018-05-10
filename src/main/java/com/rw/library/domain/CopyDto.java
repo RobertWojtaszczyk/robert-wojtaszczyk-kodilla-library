@@ -14,6 +14,4 @@ public class CopyDto {
     private String lastUpdated;
     private Status status;
     private Long bookId;
-    private String title;
-    private String author;
 }

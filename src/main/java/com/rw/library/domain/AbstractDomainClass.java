@@ -9,6 +9,10 @@ public class AbstractDomainClass implements DomainObject {
     public AbstractDomainClass() {
     }
 
+    public AbstractDomainClass(Long id) {
+        setId(id);
+    }
+
     public AbstractDomainClass(Long id, LocalDateTime dateCreated) {
         setId(id);
         this.dateCreated = dateCreated;

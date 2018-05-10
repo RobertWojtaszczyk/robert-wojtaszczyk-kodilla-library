@@ -2,10 +2,12 @@ package com.rw.library.domain;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.*;
 
-@Entity(name = "readers")
+@Entity
+@Table(name = "readers")
 public class Reader extends AbstractDomainClass {
 
     public Reader() {

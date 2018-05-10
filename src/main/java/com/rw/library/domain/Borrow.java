@@ -5,10 +5,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity(name = "borrows")
+@Entity
+@Table(name = "borrows")
 public class Borrow extends AbstractDomainClass {
 
     public Borrow() {
+    }
+
+    public Borrow(Long id, LocalDate returnDate) {
+        super(id);
+        this.returnDate = returnDate;
     }
 
     public Borrow(Long id, LocalDateTime dateCreated, LocalDate borrowDate, LocalDate returnDate, Reader reader, Copy copy) {

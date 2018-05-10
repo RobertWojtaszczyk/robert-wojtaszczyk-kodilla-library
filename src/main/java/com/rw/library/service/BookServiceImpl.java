@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import static java.util.Optional.ofNullable;
 
-//@Transactional
 @Service
 public class BookServiceImpl implements BookService {
 
@@ -22,7 +22,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book findByAuthor(String author) {
-        return bookRepository.findByAuthor(author);
+        return ofNullable(bookRepository.findByAuthor(author)).orElse(new Book());
     }
 
     @Override
@@ -30,15 +30,15 @@ public class BookServiceImpl implements BookService {
         List<Book> books = new ArrayList<>();
         bookRepository.findAll().forEach(books::add);
         return books;
-
     }
 
     @Override
     public Book getById(Long id) {
-        return bookRepository.findOne(id);
+        return ofNullable(bookRepository.findOne(id)).orElse(new Book());
     }
 
     @Override
+    @Transactional
     public Book saveOrUpdate(final Book book) {
         return bookRepository.save(book);
     }

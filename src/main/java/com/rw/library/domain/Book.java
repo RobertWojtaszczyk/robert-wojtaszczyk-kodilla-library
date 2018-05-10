@@ -6,7 +6,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity(name = "books")
+@Entity
+@Table(name = "books")
 public class Book extends AbstractDomainClass {
 
     public Book() {

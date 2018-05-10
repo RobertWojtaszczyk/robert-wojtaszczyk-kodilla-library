@@ -2,10 +2,7 @@ package com.rw.library.controller;
 
 import com.rw.library.domain.*;
 import com.rw.library.mapper.DomainMapper;
-import com.rw.library.service.BookServiceImpl;
-import com.rw.library.service.BorrowServiceImpl;
-import com.rw.library.service.CopyServiceImpl;
-import com.rw.library.service.ReaderServiceImpl;
+import com.rw.library.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,24 +15,29 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping("/v1/library")
 public class LibraryController {
     @Autowired
-    private BookServiceImpl bookService;
+    private BookService bookService;
     @Autowired
-    private CopyServiceImpl copyService;
+    private CopyService copyService;
     @Autowired
-    private ReaderServiceImpl readerService;
+    private ReaderService readerService;
     @Autowired
-    private BorrowServiceImpl borrowService;
+    private BorrowService borrowService;
     @Autowired
     private DomainMapper domainMapper;
 
     @RequestMapping(method = RequestMethod.GET, value = "/getAvailableCopies")
     public List<CopyDto> getAvailableCopies(@RequestParam Long book_id) {
-        return domainMapper.mapToListAvailableCopies(book_id);
+        return domainMapper.getAvailableCopies(book_id);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getAvailableCopiesSQL")
     public List<CopyDto> getAvailableCopiesSQL(@RequestParam Long book_id) {
         return domainMapper.mapToCopyDtoList(copyService.getListOfAvailableCopies(book_id));
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/getAvailableCopiesHQL")
+    public List<CopyDto> getAvailableCopiesHQL(@RequestParam Long book_id) {
+        return domainMapper.mapToCopyDtoList(copyService.getListOfAvailableCopiesHQL(book_id));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getBooks")

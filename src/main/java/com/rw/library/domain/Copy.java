@@ -6,13 +6,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+@NamedQuery(
+        name = "Copy.getListOfAvailableCopiesHQL",
+        query = "select c from Copy c left join c.borrows b with b.returnDate is null where c.book.id = :BOOK_ID and b.borrowDate is null"
+)
 @NamedNativeQuery(
         name = "Copy.getListOfAvailableCopies",
-        query = "select c.* from copies c left outer join borrows b on c.id = b.copy_id and b.returned_on is null where c.book_id = :BOOK_ID and b.borrowed_on is null",
+        query = "select c.* from copies c left join borrows b on c.id = b.copy_id and b.returned_on is null where c.book_id = :BOOK_ID and b.borrowed_on is null",
         resultClass = Copy.class
 )
 
-@Entity(name = "copies")
+@Entity
+@Table(name = "copies")
 public class Copy extends AbstractDomainClass {
 
     public Copy() {
@@ -49,6 +54,14 @@ public class Copy extends AbstractDomainClass {
 
     public void setBook(Book book) {
         this.book = book;
+    }
+
+    public List<Borrow> getBorrows() {
+        return borrows;
+    }
+
+    public void setBorrows(List<Borrow> borrows) {
+        this.borrows = borrows;
     }
 
     @Override

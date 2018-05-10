@@ -5,8 +5,10 @@ import com.rw.library.repository.ReaderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import static java.util.Optional.ofNullable;
 
 @Service
 public class ReaderServiceImpl implements ReaderService {
@@ -19,6 +21,11 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     @Override
+    public Reader findBySurname(String surname) {
+        return ofNullable(readerRepository.findBySurname(surname)).orElse(new Reader());
+    }
+
+    @Override
     public List<Reader> listAll() {
         List<Reader> readers = new ArrayList<>();
         readerRepository.findAll().forEach(readers::add);
@@ -27,15 +34,17 @@ public class ReaderServiceImpl implements ReaderService {
 
     @Override
     public Reader getById(Long id) {
-        return readerRepository.findOne(id);
+        return ofNullable(readerRepository.findOne(id)).orElse(new Reader());
     }
 
     @Override
+    @Transactional
     public Reader saveOrUpdate(Reader domainObject) {
         return readerRepository.save(domainObject);
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         readerRepository.delete(id);
     }

@@ -1,10 +1,7 @@
 package com.rw.library.mapper;
 
 import com.rw.library.domain.*;
-import com.rw.library.service.BookServiceImpl;
-import com.rw.library.service.BorrowServiceImpl;
-import com.rw.library.service.CopyServiceImpl;
-import com.rw.library.service.ReaderServiceImpl;
+import com.rw.library.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,13 +13,13 @@ import java.util.stream.Collectors;
 public class DomainMapper {
 
     @Autowired
-    private BookServiceImpl bookService;
+    private BookService bookService;
     @Autowired
-    private CopyServiceImpl copyService;
+    private CopyService copyService;
     @Autowired
-    private ReaderServiceImpl readerService;
+    private ReaderService readerService;
     @Autowired
-    private BorrowServiceImpl borrowService;
+    private BorrowService borrowService;
 
     public Reader mapToReader(final ReaderDto readerDto) {
         return new Reader(
@@ -54,8 +51,9 @@ public class DomainMapper {
         );
     }
 
-    public List<ReaderDto> mapToReadersDtoList(final List<Reader> readers) {
+    public List<ReaderDto> mapToReadersDtoList(final List<?> readers) {
         return readers.stream()
+                .map(o -> (Reader)o)
                 .map(this::mapToReaderDto)
                 .collect(Collectors.toList());
     }
@@ -96,8 +94,9 @@ public class DomainMapper {
         );
     }
 
-    public List<BorrowDto> mapToBorrowsDtoList(final List<Borrow> borrows) {
+    public List<BorrowDto> mapToBorrowsDtoList(final List<?> borrows) {
         return borrows.stream()
+                .map(o -> (Borrow)o)
                 .map(this::mapToBorrowDto)
                 .collect(Collectors.toList());
     }
@@ -128,12 +127,13 @@ public class DomainMapper {
                 book.getTitle(),
                 book.getAuthor(),
                 book.getCopies().size(),
-                mapToListAvailableCopies(book.getId()).size()
+                getAvailableCopies(book.getId()).size()
         );
     }
 
-    public List<BookDto> mapToBookDtoList(final List<Book> books) {
+    public List<BookDto> mapToBookDtoList(final List<?> books) {
         return books.stream()
+                .map(o -> (Book)o)
                 .map(this::mapToBookDto)
                 .collect(Collectors.toList());
     }
@@ -144,14 +144,13 @@ public class DomainMapper {
                 copy.getDateCreated().toString(),
                 copy.getLastUpdated().toString(),
                 copy.getStatus(),
-                copy.getBook().getId(),
-                copy.getBook().getTitle(),
-                copy.getBook().getAuthor()
+                copy.getBook().getId()
         );
     }
 
-    public List<CopyDto> mapToCopyDtoList(final List<Copy> copies) {
+    public List<CopyDto> mapToCopyDtoList(final List<?> copies) {
         return copies.stream()
+                .map(o -> (Copy)o)
                 .map(this::mapToCopyDto)
                 .collect(Collectors.toList());
     }
@@ -174,17 +173,26 @@ public class DomainMapper {
         );
     }
 
-    public List<CopyDto> mapToListAvailableCopies(final Long book_id) {
-        return bookService.getById(book_id).getCopies().stream()
-                .filter(copy -> borrowService.findAllByCopyAndReturnDateIsNull(copy).stream()
-                        .noneMatch(borrow -> borrow.getCopy().getId().equals(copy.getId())))
+    private List<BorrowDto> getBooksToReturn(final Long reader_id) {
+        return borrowService.findAllByReaderAndReturnDateIsNull(readerService.getById(reader_id)).stream()
+                .map(this::mapToBorrowDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<CopyDto> getAvailableCopies(final Long bookId) {
+        return copyService.getByBook(bookService.getById(bookId)).stream()
+                .filter(copy -> copy.getBorrows().stream()
+                      .allMatch(borrow -> borrow.getReturnDate() != null))
+                    //.noneMatch(borrow -> borrow.getReturnDate() == null))
                 .map(this::mapToCopyDto)
                 .collect(Collectors.toList());
     }
 
-    private List<BorrowDto> getBooksToReturn(final Long reader_id) {
-        return borrowService.findAllByReaderAndReturnDateIsNull(readerService.getById(reader_id)).stream()
-                .map(this::mapToBorrowDto)
+    public List<CopyDto> getAvailableCopies2(final Long bookId) {
+        return bookService.getById(bookId).getCopies().stream()
+                .filter(copy -> borrowService.findAllByCopyAndReturnDateIsNull(copy).stream()
+                        .noneMatch(borrow -> borrow.getCopy().getId().equals(copy.getId())))
+                .map(this::mapToCopyDto)
                 .collect(Collectors.toList());
     }
 }
