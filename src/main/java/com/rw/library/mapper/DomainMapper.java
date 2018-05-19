@@ -12,28 +12,23 @@ import java.util.stream.Collectors;
 @Component
 public class DomainMapper {
 
+    private final BookService bookService;
+    private final CopyService copyService;
+    private final ReaderService readerService;
+    private final BorrowService borrowService;
+
     @Autowired
-    private BookService bookService;
-    @Autowired
-    private CopyService copyService;
-    @Autowired
-    private ReaderService readerService;
-    @Autowired
-    private BorrowService borrowService;
+    public DomainMapper(BookService bookService, CopyService copyService, ReaderService readerService, BorrowService borrowService) {
+        this.bookService = bookService;
+        this.copyService = copyService;
+        this.readerService = readerService;
+        this.borrowService = borrowService;
+    }
 
     public Reader mapToReader(final ReaderDto readerDto) {
         return new Reader(
                 readerDto.getId(),
                 null,
-                readerDto.getName(),
-                readerDto.getSurname()
-        );
-    }
-
-    public Reader mapToReaderForUpdate(final ReaderDto readerDto) {
-        return new Reader(
-                readerDto.getId(),
-                readerService.getById(readerDto.getId()).getDateCreated(),
                 readerDto.getName(),
                 readerDto.getSurname()
         );
@@ -47,7 +42,7 @@ public class DomainMapper {
                 reader.getName(),
                 reader.getSurname(),
                 reader.getBorrows().size(),
-                getBooksToReturn(reader.getId()).size()
+                borrowService.getBooksToReturn(reader.getId()).size()
         );
     }
 
@@ -66,18 +61,6 @@ public class DomainMapper {
                 null,
                 readerService.getById(borrowDto.getReader_id()),
                 copyService.getById(borrowDto.getCopy_id())
-        );
-    }
-
-    public Borrow mapToBorrowForUpdate(final BorrowDto borrowDto) {
-        LocalDate returnDate = borrowDto.isReturning() ? LocalDate.now() : borrowService.getById(borrowDto.getId()).getReturnDate();
-        return new Borrow(
-                borrowDto.getId(),
-                borrowService.getById(borrowDto.getId()).getDateCreated(),
-                borrowService.getById(borrowDto.getId()).getBorrowDate(),
-                returnDate,
-                borrowService.getById(borrowDto.getId()).getReader(),
-                borrowService.getById(borrowDto.getId()).getCopy()
         );
     }
 
@@ -110,15 +93,6 @@ public class DomainMapper {
         );
     }
 
-    public Book mapToBookForUpdate(final BookDto bookDto) {
-        return new Book(
-                bookDto.getId(),
-                bookService.getById(bookDto.getId()).getDateCreated(),
-                bookDto.getTitle(),
-                bookDto.getAuthor()
-        );
-    }
-
     public BookDto mapToBookDto(final Book book) {
         return new BookDto(
                 book.getId(),
@@ -127,7 +101,7 @@ public class DomainMapper {
                 book.getTitle(),
                 book.getAuthor(),
                 book.getCopies().size(),
-                getAvailableCopies(book.getId()).size()
+                copyService.getAvailableCopies(book.getId()).size()
         );
     }
 
@@ -136,6 +110,15 @@ public class DomainMapper {
                 .map(o -> (Book)o)
                 .map(this::mapToBookDto)
                 .collect(Collectors.toList());
+    }
+
+    public Copy mapToCopy(final CopyDto copyDto) {
+        return new Copy(
+                copyDto.getId(),
+                null,
+                copyDto.getStatus(),
+                bookService.getById(copyDto.getBookId())
+        );
     }
 
     public CopyDto mapToCopyDto(final Copy copy) {
@@ -151,47 +134,6 @@ public class DomainMapper {
     public List<CopyDto> mapToCopyDtoList(final List<?> copies) {
         return copies.stream()
                 .map(o -> (Copy)o)
-                .map(this::mapToCopyDto)
-                .collect(Collectors.toList());
-    }
-
-    public Copy mapToCopy(final CopyDto copyDto) {
-        return new Copy(
-                copyDto.getId(),
-                null,
-                copyDto.getStatus(),
-                bookService.getById(copyDto.getBookId())
-        );
-    }
-
-    public Copy mapToCopyForUpdate(final CopyDto copyDto) {
-        return new Copy(
-                copyDto.getId(),
-                copyService.getById(copyDto.getId()).getDateCreated(),
-                copyDto.getStatus(),
-                bookService.getById(copyDto.getBookId())
-        );
-    }
-
-    private List<BorrowDto> getBooksToReturn(final Long reader_id) {
-        return borrowService.findAllByReaderAndReturnDateIsNull(readerService.getById(reader_id)).stream()
-                .map(this::mapToBorrowDto)
-                .collect(Collectors.toList());
-    }
-
-    public List<CopyDto> getAvailableCopies(final Long bookId) {
-        return copyService.getByBook(bookService.getById(bookId)).stream()
-                .filter(copy -> copy.getBorrows().stream()
-                      .allMatch(borrow -> borrow.getReturnDate() != null))
-                    //.noneMatch(borrow -> borrow.getReturnDate() == null))
-                .map(this::mapToCopyDto)
-                .collect(Collectors.toList());
-    }
-
-    public List<CopyDto> getAvailableCopies2(final Long bookId) {
-        return bookService.getById(bookId).getCopies().stream()
-                .filter(copy -> borrowService.findAllByCopyAndReturnDateIsNull(copy).stream()
-                        .noneMatch(borrow -> borrow.getCopy().getId().equals(copy.getId())))
                 .map(this::mapToCopyDto)
                 .collect(Collectors.toList());
     }

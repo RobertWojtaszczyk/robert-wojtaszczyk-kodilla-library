@@ -1,5 +1,7 @@
 package com.rw.library.domain;
 import com.rw.library.domain.definitions.Status;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -21,6 +23,12 @@ import java.util.Objects;
 public class Copy extends AbstractDomainClass {
 
     public Copy() {
+    }
+
+    public Copy(Long id, Status status, Book book) {
+        super(id);
+        this.status = status;
+        this.book = book;
     }
 
     public Copy(Long id, LocalDateTime dateCreated, Status status, Book book) {

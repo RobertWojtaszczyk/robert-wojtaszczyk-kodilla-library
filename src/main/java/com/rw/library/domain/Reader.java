@@ -1,4 +1,6 @@
 package com.rw.library.domain;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -19,7 +21,9 @@ public class Reader extends AbstractDomainClass {
         this.surname = surname;
     }
 
+    @NotEmpty(message = "*Please provide a name")
     private String name;
+    @NotEmpty(message = "*Please provide a surname")
     private String surname;
     @OneToMany(
             targetEntity = Borrow.class,

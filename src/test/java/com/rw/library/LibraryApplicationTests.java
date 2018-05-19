@@ -8,11 +8,11 @@ import com.rw.library.domain.definitions.Status;
 import com.rw.library.service.BookServiceImpl;
 import com.rw.library.service.CopyServiceImpl;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
@@ -35,7 +35,7 @@ public class LibraryApplicationTests {
 	@Test
 	public void contextLoads() {
 	}
-    @Ignore
+
     @Test
     public void testAddBookAndCopy() {
 
@@ -64,5 +64,12 @@ public class LibraryApplicationTests {
         books.forEach(System.out::println);
         copies.forEach(System.out::println);
         copyDtoList.forEach(System.out::println);
+
+        copyService.delete(copy1.getId());
+        List<CopyDto> copyDtoList2 = libraryController.getCopies();
+        copyDtoList2.forEach(System.out::println);
+
+
+
     }
 }

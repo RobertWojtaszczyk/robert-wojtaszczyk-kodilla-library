@@ -8,18 +8,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import static java.util.Optional.ofNullable;
 
+@Transactional
 @Service
 public class BorrowServiceImpl implements BorrowService {
 
     private BorrowRepository borrowRepository;
+    private ReaderService readerService;
 
     @Autowired
     public void setBorrowRepository(BorrowRepository borrowRepository) {
         this.borrowRepository = borrowRepository;
+    }
+
+    @Autowired
+    public void setReaderService(ReaderService readerService) {
+        this.readerService = readerService;
     }
 
     @Override
@@ -35,15 +45,21 @@ public class BorrowServiceImpl implements BorrowService {
     }
 
     @Override
-    @Transactional
     public Borrow saveOrUpdate(Borrow domainObject) {
-        return borrowRepository.save(domainObject);
+        return ofNullable(borrowRepository.save(domainObject)).orElse(new Borrow());
     }
 
     @Override
-    @Transactional
     public void delete(Long id) {
         borrowRepository.delete(id);
+    }
+
+    public void returnBook(Long borrowId) {
+        Borrow borrow = borrowRepository.findOne(borrowId);
+        if (borrow.getReturnDate() == null) {
+            borrow.setReturnDate(LocalDate.now());
+            borrowRepository.save(borrow);
+        }
     }
 
     @Override
@@ -53,8 +69,11 @@ public class BorrowServiceImpl implements BorrowService {
 
     @Override
     public List<Borrow> findAllByReaderAndReturnDateIsNull(Reader reader) {
-        List<Borrow> borrows = new ArrayList<>();
-        borrowRepository.findAllByReaderAndReturnDateIsNull(reader).forEach(borrows::add);
-        return borrows;
+        return new ArrayList<>(borrowRepository.findAllByReaderAndReturnDateIsNull(reader));
+    }
+
+    @Override
+    public List<Borrow> getBooksToReturn(final Long reader_id) {
+        return new ArrayList<>(findAllByReaderAndReturnDateIsNull(readerService.getById(reader_id)));
     }
 }

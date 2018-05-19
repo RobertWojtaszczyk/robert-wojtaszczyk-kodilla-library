@@ -1,6 +1,7 @@
 package com.rw.library.service;
 
 import com.rw.library.domain.Reader;
+import com.rw.library.domain.ReaderDto;
 import com.rw.library.repository.ReaderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import static java.util.Optional.ofNullable;
 
+@Transactional
 @Service
 public class ReaderServiceImpl implements ReaderService {
 
@@ -38,14 +40,26 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     @Override
-    @Transactional
     public Reader saveOrUpdate(Reader domainObject) {
-        return readerRepository.save(domainObject);
+        return ofNullable(readerRepository.save(domainObject)).orElse(new Reader());
     }
 
     @Override
-    @Transactional
+    public Reader update(ReaderDto readerDto) {
+        Reader reader = readerRepository.findOne(readerDto.getId()); //nullPointerException if reader not exists
+        if (!readerDto.getName().equals(reader.getName())) {
+            reader.setName(ofNullable(readerDto.getName()).orElse(reader.getName()));
+        }
+        if (!readerDto.getSurname().equals(reader.getSurname())) {
+            reader.setSurname(ofNullable(readerDto.getSurname()).orElse(reader.getSurname()));
+        }
+        return ofNullable(readerRepository.save(reader)).orElse(new Reader());
+    }
+
+    @Override
     public void delete(Long id) {
         readerRepository.delete(id);
     }
+
+
 }

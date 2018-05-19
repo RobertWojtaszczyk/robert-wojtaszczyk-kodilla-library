@@ -1,5 +1,7 @@
 package com.rw.library.domain;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -18,8 +20,9 @@ public class Book extends AbstractDomainClass {
         this.title = title;
         this.author = author;
     }
-
+    @NotEmpty(message = "*Please provide a title")
     private String title;
+    @NotEmpty(message = "*Please provide a author")
     private String author;
     @OneToMany(
             targetEntity = Copy.class,
