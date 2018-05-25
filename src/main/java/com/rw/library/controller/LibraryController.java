@@ -3,10 +3,13 @@ package com.rw.library.controller;
 import com.rw.library.domain.*;
 import com.rw.library.mapper.DomainMapper;
 import com.rw.library.service.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -14,6 +17,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping("/v1/library")
 public class LibraryController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LibraryController.class);
+
     private final BookService bookService;
     private final CopyService copyService;
     private final ReaderService readerService;
@@ -65,8 +70,8 @@ public class LibraryController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getBooksToReturnByReader")
-    public List<BorrowDto> getBooksToReturnByReader(@RequestParam Long reader_id) {
-        return domainMapper.mapToBorrowsDtoList(borrowService.getBooksToReturn(reader_id));
+    public List<BorrowedDto> getBooksToReturnByReader(@RequestParam Long reader_id) {
+        return borrowService.getBooksToReturn(reader_id);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/createBook", consumes = APPLICATION_JSON_VALUE)
@@ -107,5 +112,13 @@ public class LibraryController {
     @RequestMapping(method = RequestMethod.PUT, value = "/returnBook")
     public void returnBook(@RequestParam Long borrow_id) {
         borrowService.returnBook(borrow_id);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/getCopy")
+    public CopyDto getCopy(@RequestParam Long copy_id) {
+        return Optional.ofNullable(domainMapper.mapToCopyDto(copyService.getById(copy_id)))
+                .orElseGet(() -> {
+                    LOGGER.warn("Copy by id=" + copy_id + " not found!");
+                    return new CopyDto();});
     }
 }

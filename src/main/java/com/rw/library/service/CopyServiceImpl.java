@@ -5,19 +5,21 @@ import com.rw.library.domain.Copy;
 import com.rw.library.domain.CopyDto;
 import com.rw.library.repository.BookRepository;
 import com.rw.library.repository.CopyRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static java.util.Optional.ofNullable;
 
 @Transactional
 @Service
 public class CopyServiceImpl implements CopyService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CopyServiceImpl.class);
 
     private CopyRepository copyRepository;
     private BookRepository bookRepository;
@@ -41,20 +43,27 @@ public class CopyServiceImpl implements CopyService {
 
     @Override
     public Copy getById(Long id) {
-        return ofNullable(copyRepository.findOne(id)).orElse(new Copy());
+        return Optional.ofNullable(copyRepository.findOne(id)).orElseGet(() -> {
+            LOGGER.warn("Copy by id=" + id + " not found. Method: Copy getById(Long id)");
+            return new Copy(); // null???
+        });
+
     }
 
     @Override
     public Copy saveOrUpdate(Copy domainObject) {
-        return ofNullable(copyRepository.save(domainObject)).orElse(new Copy());
+        return Optional.ofNullable(copyRepository.save(domainObject)).orElseGet(() -> {
+            LOGGER.error("Error due persisting Copy entity! method: Copy saveOrUpdate(Copy domainObject)");
+            return new Copy();
+        });
     }
 
     @Override
     public Copy update(CopyDto copyDto) {
         Copy copy = copyRepository.findOne(copyDto.getId()); //nullPointerException if copy not exists
         copy.setStatus(copyDto.getStatus()); // if not in Enum: org.springframework.http.converter.HttpMessageNotReadableException
-        copy.setBook(ofNullable(bookRepository.findOne(copyDto.getBookId())).orElse(copy.getBook()));  //nullPointerException if book not exists
-        return ofNullable(copyRepository.save(copy)).orElse(new Copy());
+        copy.setBook(Optional.ofNullable(bookRepository.findOne(copyDto.getBookId())).orElse(copy.getBook()));  //nullPointerException if book not exists
+        return Optional.ofNullable(copyRepository.save(copy)).orElse(new Copy());
     }
 
     @Override

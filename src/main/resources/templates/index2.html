@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>Library interface</title>
+
+
+    <link href="css/grid-layout.css" rel="stylesheet"/>
+    <link href="css/style2.css" rel="stylesheet"/>
+
+</head>
+<body>
+<h2>Library Interface</h2>
+<div class="grid-container">
+    <div th:if="${not #lists.isEmpty(readers)}" class="datatable_books" id="data-books-container">
+        <h2>Readers List</h2>
+        <table class="table table-striped">
+            <tr>
+                <th>Id</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Total Books Borrowed</th>
+                <th>Currently borrowed</th>
+            </tr>
+            <tr th:each="reader : ${readers}">
+                <td th:text="${reader.id}"><a href="/">Id</a></td>
+                <td th:text="${reader.name}">First Name</td>
+                <td th:text="${reader.surname}">Last Name</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td><button type="button" id="show-borrowed-books" class="datatable__button">Show Borrows</button></td>
+               <!-- <td><a th:href="${'/v1/library/getBooksToReturnByReader?reader_id=' + reader.id}" th:text="${reader.currentlyBorrowedBooks}" show-borrowed-books></a></td>-->
+              <!--  <td><a th:href="${'/v1/library/getBooksToReturnByReader?reader_id=' + reader.id}" th:text="${reader.currentlyBorrowedBooks}" show-borrowed-books></a></td>-->
+            </tr>
+        </table>
+    </div>
+    <div th:if="${not #lists.isEmpty(readers)}" class="datatable_borrowed" id="data-borrows-container">
+        <h2>Borrowed Books</h2>
+        <!--<table class="table table-striped">
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Borrow Date</th>
+                <th>Return Date</th>
+                <th>Overdue</th>
+                <th>Return Book</th>
+            </tr>
+            &lt;!&ndash;<tr th:each="reader : ${readers}">
+                <td th:text="${reader.id}"><a href="/">Id</a></td>
+                <td th:text="${reader.name}">First Name</td>
+                <td th:text="${reader.surname}">Last Name</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td><a th:href="${'/v1/library/getBooksToReturnByReader?reader_id=' + reader.id}" th:text="${reader.currentlyBorrowedBooks}"></a></td>
+            </tr>&ndash;&gt;
+        </table>-->
+    </div>
+    <div th:if="${not #lists.isEmpty(readers)}">
+        <h2>Update Reader</h2>
+        <table class="table table-striped">
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Borrow Date</th>
+                <th>Return Date</th>
+                <th>Overdue</th>
+                <th>Return Book</th>
+            </tr>
+            <!--<tr th:each="reader : ${readers}">
+                <td th:text="${reader.id}"><a href="/">Id</a></td>
+                <td th:text="${reader.name}">First Name</td>
+                <td th:text="${reader.surname}">Last Name</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td><a th:href="${'/v1/library/getBooksToReturnByReader?reader_id=' + reader.id}" th:text="${reader.currentlyBorrowedBooks}"></a></td>
+            </tr>-->
+        </table>
+    </div>
+    <div th:if="${not #lists.isEmpty(books)}">
+        <h2>Books</h2>
+        <table class="table table-striped">
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Total copies</th>
+                <th>Copies available</th>
+            </tr>
+            <tr th:each="book : ${books}">
+                <td th:text="${book.id}"><a href="/">Id</a></td>
+                <td th:text="${book.title}">Title</td>
+                <td th:text="${book.author}">Author</td>
+                <td th:text="${book.totalCopiesInLibrary}">Total Copies</td>
+                <td><a th:href="${'/v1/library/getAvailableCopiesHQL?book_id=' + book.id}" th:text="${book.copiesAvailable}"></a></td>
+            </tr>
+        </table>
+    </div>
+    <div th:if="${not #lists.isEmpty(readers)}">
+        <h2>Available copies</h2>
+        <table class="table table-striped">
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Borrow Date</th>
+                <th>Return Date</th>
+                <th>Overdue</th>
+                <th>Return Book</th>
+            </tr>
+            <!--<tr th:each="reader : ${readers}">
+                <td th:text="${reader.id}"><a href="/">Id</a></td>
+                <td th:text="${reader.name}">First Name</td>
+                <td th:text="${reader.surname}">Last Name</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td><a th:href="${'/v1/library/getBooksToReturnByReader?reader_id=' + reader.id}" th:text="${reader.currentlyBorrowedBooks}"></a></td>
+            </tr>-->
+        </table>
+    </div>
+    <div th:if="${not #lists.isEmpty(readers)}">
+        <h2>Borrowed Copies</h2>
+        <table class="table table-striped">
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Borrow Date</th>
+                <th>Return Date</th>
+                <th>Overdue</th>
+                <th>Return Book</th>
+            </tr>
+            <!--<tr th:each="reader : ${readers}">
+                <td th:text="${reader.id}"><a href="/">Id</a></td>
+                <td th:text="${reader.name}">First Name</td>
+                <td th:text="${reader.surname}">Last Name</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td><a th:href="${'/v1/library/getBooksToReturnByReader?reader_id=' + reader.id}" th:text="${reader.currentlyBorrowedBooks}"></a></td>
+            </tr>-->
+        </table>
+    </div>
+    <div th:if="${not #lists.isEmpty(readers)}">
+        <h2>Edit Book</h2>
+        <table class="table table-striped">
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Borrow Date</th>
+                <th>Return Date</th>
+                <th>Overdue</th>
+                <th>Return Book</th>
+            </tr>
+            <!--<tr th:each="reader : ${readers}">
+                <td th:text="${reader.id}"><a href="/">Id</a></td>
+                <td th:text="${reader.name}">First Name</td>
+                <td th:text="${reader.surname}">Last Name</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td><a th:href="${'/v1/library/getBooksToReturnByReader?reader_id=' + reader.id}" th:text="${reader.currentlyBorrowedBooks}"></a></td>
+            </tr>-->
+        </table>
+    </div>
+    <div th:if="${not #lists.isEmpty(readers)}">
+        <h2>Edit copy</h2>
+        <table class="table table-striped">
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Borrow Date</th>
+                <th>Return Date</th>
+                <th>Overdue</th>
+                <th>Return Book</th>
+            </tr>
+            <!--<tr th:each="reader : ${readers}">
+                <td th:text="${reader.id}"><a href="/">Id</a></td>
+                <td th:text="${reader.name}">First Name</td>
+                <td th:text="${reader.surname}">Last Name</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td><a th:href="${'/v1/library/getBooksToReturnByReader?reader_id=' + reader.id}" th:text="${reader.currentlyBorrowedBooks}"></a></td>
+            </tr>-->
+        </table>
+    </div>
+    <div th:if="${not #lists.isEmpty(readers)}">
+        <h2>History of Borrows</h2>
+        <table class="table table-striped">
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Borrow Date</th>
+                <th>Return Date</th>
+                <th>Overdue</th>
+                <th>Return Book</th>
+            </tr>
+            <!--<tr th:each="reader : ${readers}">
+                <td th:text="${reader.id}"><a href="/">Id</a></td>
+                <td th:text="${reader.name}">First Name</td>
+                <td th:text="${reader.surname}">Last Name</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td th:text="${reader.totalBorrowedBooks}">Total Books Borrowed</td>
+                <td><a th:href="${'/v1/library/getBooksToReturnByReader?reader_id=' + reader.id}" th:text="${reader.currentlyBorrowedBooks}"></a></td>
+            </tr>-->
+        </table>
+    </div>
+
+</div>
+
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/script2.js"></script>
+
+</body>
+</html>

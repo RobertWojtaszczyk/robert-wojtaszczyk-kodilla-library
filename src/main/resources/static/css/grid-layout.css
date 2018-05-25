@@ -1,0 +1,16 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-gap: 3px 3px;
+}
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+
+    .grid-container {
+        display: -ms-grid;
+        -ms-grid-columns: 1fr 1fr 1fr;
+        -ms-grid-rows: 1fr 1fr 1fr;
+    }
+
+}

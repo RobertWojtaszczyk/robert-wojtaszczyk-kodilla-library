@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<html>
+<head lang="en">
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>Library interface</title>
+    <!--<link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i&subset=latin-ext" rel="stylesheet"/>-->
+
+    <link href="css/grid-layout.css" rel="stylesheet"/>
+    <link href="css/style.css" rel="stylesheet"/>
+    <link href="css/jquery.dataTables.min.css" rel="stylesheet"/>
+
+</head>
+
+<body>
+<h2>Library Interface</h2>
+
+<div class="grid-container">
+    <div class="datatable_readers" id="data-readers-container">
+        <h2>Readers List</h2>
+        <table class="datatable_row" id="datatable_readers_row">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Total Books Borrowed</th>
+                    <th>Currently borrowed</th>
+                    <th>Show borrows</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="datatable_borrowed" id="data-borrowed-container">
+        <h2>Borrowed Books</h2>
+        <table class="datatable_row" id="datatable_borrowed_row">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Borrow Date</th>
+                <th>Return Date</th>
+                <th>Overdue</th>
+                <th>Reader</th>
+                <th>Return</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <div >
+        <h2>Update Reader</h2>
+
+    </div>
+    <div >
+        <h2>Books</h2>
+
+    </div>
+    <div >
+        <h2>Available copies</h2>
+
+    </div>
+    <div >
+        <h2>Borrowed Copies</h2>
+
+    </div>
+    <div >
+        <h2>Edit Book</h2>
+
+    </div>
+    <div >
+        <h2>Edit copy</h2>
+
+    </div>
+    <div >
+        <h2>History of Borrows</h2>
+
+    </div>
+
+</div>
+
+
+<!--<tr class="templateReaders template" id="data-datatable-readers-template" data-reader-id="0">
+    <td id="reader_id"></td>
+    <td id="reader_name"></td>
+    <td id="reader_surname"></td>
+    <td id="reader_total_books"></td>
+    <td id="reader_borrowed_books"><button type="button" id="show-borrowed-books" class="datatable__button">Show Borrows</button></td>
+</tr>-->
+<!--<div class="templateReaders template" id="data-datatable-readers-template">
+    <table data-reader-id="0">
+        <tr >
+            <td id="reader_id"></td>
+            <td id="reader_name"></td>
+            <td id="reader_surname"></td>
+            <td id="reader_total_books"></td>
+            <td id="reader_borrowed_books"><button type="button" id="show-borrowed-books" class="datatable__button">Show Borrows</button></td>
+        </tr>
+    </table>
+</div>-->
+
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/jquery.dataTables.min.js"></script>
+<script src="js/script.js"></script>
+
+</body>
+</html>

@@ -1,8 +1,10 @@
 package com.rw.library.service;
 
 import com.rw.library.domain.Borrow;
+import com.rw.library.domain.BorrowedDto;
 import com.rw.library.domain.Copy;
 import com.rw.library.domain.Reader;
+import com.rw.library.mapper.DomainMapper;
 import com.rw.library.repository.BorrowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +13,6 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
 
@@ -21,6 +22,7 @@ public class BorrowServiceImpl implements BorrowService {
 
     private BorrowRepository borrowRepository;
     private ReaderService readerService;
+    private DomainMapper domainMapper;
 
     @Autowired
     public void setBorrowRepository(BorrowRepository borrowRepository) {
@@ -30,6 +32,11 @@ public class BorrowServiceImpl implements BorrowService {
     @Autowired
     public void setReaderService(ReaderService readerService) {
         this.readerService = readerService;
+    }
+
+    @Autowired
+    public void setDomainMapper(DomainMapper domainMapper) {
+        this.domainMapper = domainMapper;
     }
 
     @Override
@@ -66,14 +73,13 @@ public class BorrowServiceImpl implements BorrowService {
     public List<Borrow> findAllByCopyAndReturnDateIsNull(Copy copy) {
         return new ArrayList<>(borrowRepository.findAllByCopyAndReturnDateIsNull(copy));
     }
-
     @Override
     public List<Borrow> findAllByReaderAndReturnDateIsNull(Reader reader) {
         return new ArrayList<>(borrowRepository.findAllByReaderAndReturnDateIsNull(reader));
     }
 
     @Override
-    public List<Borrow> getBooksToReturn(final Long reader_id) {
-        return new ArrayList<>(findAllByReaderAndReturnDateIsNull(readerService.getById(reader_id)));
+    public List<BorrowedDto> getBooksToReturn(final Long reader_id) {
+        return new ArrayList<>(domainMapper.mapToBorrowedList(findAllByReaderAndReturnDateIsNull(readerService.getById(reader_id))));
     }
 }

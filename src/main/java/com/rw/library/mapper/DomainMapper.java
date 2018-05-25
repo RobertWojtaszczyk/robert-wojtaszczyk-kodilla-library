@@ -122,6 +122,9 @@ public class DomainMapper {
     }
 
     public CopyDto mapToCopyDto(final Copy copy) {
+        if (copy.getId() == null) { // ?????
+            return new CopyDto();
+        }
         return new CopyDto(
                 copy.getId(),
                 copy.getDateCreated().toString(),
@@ -135,6 +138,23 @@ public class DomainMapper {
         return copies.stream()
                 .map(o -> (Copy)o)
                 .map(this::mapToCopyDto)
+                .collect(Collectors.toList());
+    }
+
+    public BorrowedDto mapToBorrowed(final Borrow borrow) {
+         return new BorrowedDto(
+                        borrow.getId(),
+                        borrow.getCopy().getBook().getTitle(),
+                        borrow.getCopy().getBook().getAuthor(),
+                        borrow.getBorrowDate().toString(),
+                        borrow.getBorrowDate().plusDays(30).toString(),
+                        borrow.getBorrowDate().plusDays(30).isBefore(LocalDate.now()),
+                        borrow.getReader().getId());
+    }
+
+    public List<BorrowedDto> mapToBorrowedList(final List<Borrow> borrows) {
+        return borrows.stream()
+                .map(this::mapToBorrowed)
                 .collect(Collectors.toList());
     }
 }
