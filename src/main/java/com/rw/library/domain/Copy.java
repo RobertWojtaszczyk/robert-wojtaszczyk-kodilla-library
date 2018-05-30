@@ -1,8 +1,8 @@
 package com.rw.library.domain;
 import com.rw.library.domain.definitions.Status;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,6 +37,7 @@ public class Copy extends AbstractDomainClass {
         this.book = book;
     }
     @Enumerated(EnumType.STRING)
+    @NotNull
     private Status status;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")

@@ -3,6 +3,27 @@
 	padding: 0;
 	background-color: lightgray;
 }
+.datatable_univ {
+	padding: 15px;
+	margin: 10px;
+    text-align: center;
+    border: 1px solid transparent;
+}
+.app_title {
+    text-align: center;
+    background-color: slategray;
+    padding: 20px;
+    margin: 20px;
+}
+.datatable_row {
+    padding: 10px;
+    margin: 10px;
+}
+.datatable_title {
+    background-color: lightslategray;
+    padding: 10px;
+    margin: 10px;
+}
 .datatable_readers {
 	background-color: lightgray;
 }

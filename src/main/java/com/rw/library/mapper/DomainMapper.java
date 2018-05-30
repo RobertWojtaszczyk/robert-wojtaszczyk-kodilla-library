@@ -11,19 +11,21 @@ import java.util.stream.Collectors;
 
 @Component
 public class DomainMapper {
-
+    //    @Autowired
     private final BookService bookService;
     private final CopyService copyService;
     private final ReaderService readerService;
-    private final BorrowService borrowService;
+    @Autowired
+    private BorrowService borrowService;
 
     @Autowired
-    public DomainMapper(BookService bookService, CopyService copyService, ReaderService readerService, BorrowService borrowService) {
+    public DomainMapper(final BookService bookService, final CopyService copyService, final ReaderService readerService) {
         this.bookService = bookService;
         this.copyService = copyService;
         this.readerService = readerService;
-        this.borrowService = borrowService;
     }
+
+
 
     public Reader mapToReader(final ReaderDto readerDto) {
         return new Reader(
@@ -42,7 +44,7 @@ public class DomainMapper {
                 reader.getName(),
                 reader.getSurname(),
                 reader.getBorrows().size(),
-                borrowService.getBooksToReturn(reader.getId()).size()
+                borrowService.getBorrowedBooks(reader.getId()).size()
         );
     }
 

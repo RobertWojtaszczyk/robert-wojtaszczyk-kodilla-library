@@ -19,18 +19,13 @@ import java.util.stream.Collectors;
 @Transactional
 @Service
 public class CopyServiceImpl implements CopyService {
+    private final CopyRepository copyRepository;
+    private final BookRepository bookRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(CopyServiceImpl.class);
 
-    private CopyRepository copyRepository;
-    private BookRepository bookRepository;
-
     @Autowired
-    public void setCopyRepository(CopyRepository copyRepository) {
+    public CopyServiceImpl(final CopyRepository copyRepository, final BookRepository bookRepository) {
         this.copyRepository = copyRepository;
-    }
-
-    @Autowired
-    public void setBookRepository(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
 
@@ -58,7 +53,7 @@ public class CopyServiceImpl implements CopyService {
         });
     }
 
-    @Override
+    @Override // Poprawić, nie może tu być Dto!!! tylko Copy!!!
     public Copy update(CopyDto copyDto) {
         Copy copy = copyRepository.findOne(copyDto.getId()); //nullPointerException if copy not exists
         copy.setStatus(copyDto.getStatus()); // if not in Enum: org.springframework.http.converter.HttpMessageNotReadableException

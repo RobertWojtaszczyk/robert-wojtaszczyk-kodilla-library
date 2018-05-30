@@ -8,4 +8,5 @@ import org.springframework.data.domain.Pageable;
 public interface BookService extends CRUDService<Book> {
     Book findByAuthor(String author);
     Book update(BookDto bookDto);
+    Page<Book> listAllPageable(Pageable pageable);
 }

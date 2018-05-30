@@ -16,11 +16,10 @@ import static java.util.Optional.ofNullable;
 @Transactional
 @Service
 public class BookServiceImpl implements BookService {
-
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
     @Autowired
-    public void setBookRepository(BookRepository bookRepository) {
+    public BookServiceImpl(final BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
 
@@ -37,6 +36,11 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public Page<Book> listAllPageable(Pageable pageable) {
+        return bookRepository.findAll(pageable);
+    }
+
+    @Override
     public Book getById(Long id) {
         return ofNullable(bookRepository.findOne(id)).orElse(new Book());
     }
@@ -46,7 +50,7 @@ public class BookServiceImpl implements BookService {
         return ofNullable(bookRepository.save(book)).orElse(new Book());
     }
 
-    @Override
+    @Override //??????? poprawić DTO na BOOK!!! tu nie ma być DTO!!!
     public Book update(BookDto bookDto) {
             Book book = bookRepository.findOne(bookDto.getId()); //nullPointerException if book not exists
             if (!bookDto.getAuthor().equals(book.getAuthor())) {

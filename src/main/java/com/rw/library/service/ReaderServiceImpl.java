@@ -14,11 +14,10 @@ import static java.util.Optional.ofNullable;
 @Transactional
 @Service
 public class ReaderServiceImpl implements ReaderService {
-
-    private ReaderRepository readerRepository;
+    private final ReaderRepository readerRepository;
 
     @Autowired
-    public void setReaderRepository(ReaderRepository readerRepository) {
+    public ReaderServiceImpl(final ReaderRepository readerRepository) {
         this.readerRepository = readerRepository;
     }
 
@@ -44,7 +43,7 @@ public class ReaderServiceImpl implements ReaderService {
         return ofNullable(readerRepository.save(domainObject)).orElse(new Reader());
     }
 
-    @Override
+    @Override // Poprawić, nie może tu być DTO!!! tylko Reader!!!
     public Reader update(ReaderDto readerDto) {
         Reader reader = readerRepository.findOne(readerDto.getId()); //nullPointerException if reader not exists
         if (!readerDto.getName().equals(reader.getName())) {
@@ -60,6 +59,4 @@ public class ReaderServiceImpl implements ReaderService {
     public void delete(Long id) {
         readerRepository.delete(id);
     }
-
-
 }

@@ -9,6 +9,7 @@ $(document).ready(function() {
     var borrowedTable;
 
     generateReaders();
+    generateBooks();
 
 
     function returnBook(urlReturnBook, urlBorrowed) {
@@ -24,7 +25,6 @@ $(document).ready(function() {
 
     function generateBorrowed(urlBorrowed) {
         borrowedTable = $("#datatable_borrowed_row").DataTable({
-            // retrieve: true,
             destroy: true,
             ajax: {
                 url: urlBorrowed,
@@ -57,11 +57,69 @@ $(document).ready(function() {
             var urlBorrowed = 'http://localhost:8080/v1/library/getBooksToReturnByReader?reader_id='+data.readerId;
             returnBook(urlReturnBook, urlBorrowed);
         } );
+    }
 
-        /*$("#datatable_readers_row tbody").on( 'click', 'button', function () {
-            var data = readersTable.row($(this).parents('tr')).data();
-            alert( ":" + data.name + ':borrowed: '+ data.id + ' books, reader id=' + id);
+    function generateAvCopies(urlAvCopies) {
+        avCopiesTable = $("#datatable_copies_row").DataTable({
+            destroy: true,
+            ajax: {
+                url: urlAvCopies,
+                dataSrc: ''
+            },
+            rowId: 'id',
+            searching: false,
+            paging: false,
+            columns: [
+                {data : "id"},
+                {data : "status"},
+                {data : "bookId"},
+                {
+                    targets: -1,
+                    data: null,
+                    defaultContent: "<button>Borrow</button>"
+                }
+            ]
+        });
+        /*$("#datatable_borrowed_row tbody").on( 'click', 'button', function () {
+            var data = borrowedTable.row($(this).parents('tr')).data();
+            var urlReturnBook = 'http://localhost:8080/v1/library/returnBook?borrow_id='+data.id;
+            var urlBorrowed = 'http://localhost:8080/v1/library/getBooksToReturnByReader?reader_id='+data.readerId;
+            returnBook(urlReturnBook, urlBorrowed);
         } );*/
+    }
+
+    function generateBooks() {
+        const requestUrl = apiRoot + 'getBooks';
+        var booksTable = $("#datatable_books_row").DataTable( {
+            // retrieve: true,
+            destroy: true,
+            pageLength: 5,
+            // processing: true,
+            // serverSide: true,
+            ajax: {
+                url: requestUrl,
+                dataSrc: ''
+            },
+            rowId: 'id',
+            columns: [
+                {data : "id"},
+                {data : "title"},
+                {data : "author"},
+                {data : "totalCopiesInLibrary"},
+                {data : "copiesAvailable"},
+                {
+                    targets: -1,
+                    data: null,
+                    defaultContent: "<button>Show</button>"
+                }
+            ]
+        });
+
+        $("#datatable_books_row tbody").on( 'click', 'button', function () {
+            var data = booksTable.row($(this).parents('tr')).data();
+            var urlAvCopies = 'http://localhost:8080/v1/library/getAvailableCopies?book_id='+data.id;
+            generateAvCopies(urlAvCopies);
+        } );
     }
 
     function generateReaders() {
@@ -69,6 +127,7 @@ $(document).ready(function() {
         var readersTable = $("#datatable_readers_row").DataTable( {
             // retrieve: true,
             destroy: true,
+            pageLength: 5,
             // processing: true,
             // serverSide: true,
             ajax: {

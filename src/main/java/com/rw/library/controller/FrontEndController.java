@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -33,7 +34,7 @@ public class FrontEndController {
     private static final int INITIAL_PAGE_SIZE = 5;
     private static final int[] PAGE_SIZES = { 5, 10};
 
-    @Autowired
+
     public FrontEndController(BookService bookService, CopyService copyService, ReaderService readerService, BorrowService borrowService, DomainMapper domainMapper) {
         this.bookService = bookService;
         this.copyService = copyService;
@@ -49,22 +50,24 @@ public class FrontEndController {
         this.bookRepository = bookRepository;
     }
 
-    @RequestMapping("/")
+    @RequestMapping(method = RequestMethod.GET, value = "/")
     public String index(Model model){
 //        model.addAttribute("readers", domainMapper.mapToReadersDtoList(readerService.listAll()));
 //        model.addAttribute("books", domainMapper.mapToBookDtoList(bookService.listAll()));
         return "index";
     }
 
-    @RequestMapping("/books")
+    @RequestMapping(method = RequestMethod.GET, value = "/books")
     public ModelAndView homepage(@RequestParam("pageSize") Optional<Integer> pageSize, @RequestParam("page") Optional<Integer> page) {
+        //(@RequestParam(name = "pageSize", defaultValue = "1") int pageSize)
         ModelAndView modelAndView = new ModelAndView("books");
 
         int evalPageSize = pageSize.orElse(INITIAL_PAGE_SIZE);
         int evalPage = (page.orElse(0) < 1) ? INITIAL_PAGE : page.get() - 1;
 
-//        Page<BookDto> bookslist = domainMapper.mapToBookDtoList(bookRepository.findAll(new PageRequest(evalPage, evalPageSize)));
-        Page<Book> bookslist = bookRepository.findAll(new PageRequest(evalPage, evalPageSize));
+        //Page<Book> bookslist = bookRepository.findAll(new PageRequest(evalPage, evalPageSize));
+
+        Page<Book> bookslist = (bookService.listAllPageable(new PageRequest(evalPage, evalPageSize)));
         Pager pager = new Pager(bookslist.getTotalPages(),bookslist.getNumber(),BUTTONS_TO_SHOW);
         modelAndView.addObject("bookslist",bookslist);
         modelAndView.addObject("selectedPageSize", evalPageSize);

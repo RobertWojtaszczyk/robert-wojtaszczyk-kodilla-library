@@ -19,24 +19,13 @@ import static java.util.Optional.ofNullable;
 @Transactional
 @Service
 public class BorrowServiceImpl implements BorrowService {
-
-    private BorrowRepository borrowRepository;
-    private ReaderService readerService;
-    private DomainMapper domainMapper;
+    private final BorrowRepository borrowRepository;
+    private final ReaderService readerService; // można tu korzystać z innych serwisów?????
 
     @Autowired
-    public void setBorrowRepository(BorrowRepository borrowRepository) {
+    public BorrowServiceImpl(final BorrowRepository borrowRepository, final ReaderService readerService) {
         this.borrowRepository = borrowRepository;
-    }
-
-    @Autowired
-    public void setReaderService(ReaderService readerService) {
         this.readerService = readerService;
-    }
-
-    @Autowired
-    public void setDomainMapper(DomainMapper domainMapper) {
-        this.domainMapper = domainMapper;
     }
 
     @Override
@@ -79,7 +68,7 @@ public class BorrowServiceImpl implements BorrowService {
     }
 
     @Override
-    public List<BorrowedDto> getBooksToReturn(final Long reader_id) {
-        return new ArrayList<>(domainMapper.mapToBorrowedList(findAllByReaderAndReturnDateIsNull(readerService.getById(reader_id))));
+    public List<Borrow> getBorrowedBooks(final Long reader_id) {
+        return new ArrayList<>(findAllByReaderAndReturnDateIsNull(readerService.getById(reader_id)));
     }
 }

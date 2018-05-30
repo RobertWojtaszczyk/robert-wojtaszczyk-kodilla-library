@@ -16,11 +16,11 @@
 </head>
 
 <body>
-<h2>Library Interface</h2>
+<h2 class="app_title">Library Interface</h2>
 
 <div class="grid-container">
-    <div class="datatable_readers" id="data-readers-container">
-        <h2>Readers List</h2>
+    <div class="datatable_readers datatable_univ" id="data-readers-container">
+        <h2 class="datatable_title">Readers List</h2>
         <table class="datatable_row" id="datatable_readers_row">
             <thead>
                 <tr>
@@ -34,49 +34,71 @@
             </thead>
         </table>
     </div>
-    <div class="datatable_borrowed" id="data-borrowed-container">
-        <h2>Borrowed Books</h2>
+    <div class="datatable_borrowed datatable_univ" id="data-borrowed-container">
+        <h2 class="datatable_title">Borrowed Books</h2>
         <table class="datatable_row" id="datatable_borrowed_row">
             <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Author</th>
-                <th>Borrow Date</th>
-                <th>Return Date</th>
-                <th>Overdue</th>
-                <th>Reader</th>
-                <th>Return</th>
-            </tr>
+                <tr>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Borrow Date</th>
+                    <th>Return Date</th>
+                    <th>Overdue</th>
+                    <th>Reader</th>
+                    <th>Return</th>
+                </tr>
             </thead>
         </table>
     </div>
-    <div >
-        <h2>Update Reader</h2>
+    <div class="datatable_univ">
+        <h2 class="datatable_title">Update Reader</h2>
 
     </div>
-    <div >
-        <h2>Books</h2>
+    <div class="datatable_books datatable_univ" id="data-books-container">
+        <h2 class="datatable_title">Books</h2>
+        <table class="datatable_row" id="datatable_books_row">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Total Copies</th>
+                    <th>Copies Available</th>
+                    <th>Show Copies</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <div class="datatable_copies datatable_univ" id="data-copies-container">
+        <h2 class="datatable_title">Available copies</h2>
+        <table class="datatable_row" id="datatable_copies_row">
+            <thead>
+                <tr>
+                    <th>Book Id</th>
+                    <th>Status</th>
+                    <th>Copy Id</th>
+                    <th>Borrow</th>
+                </tr>
+            </thead>
+        </table>
 
     </div>
-    <div >
-        <h2>Available copies</h2>
+    <div class="datatable_univ">
+        <h2 class="datatable_title">Borrowed Copies</h2>
 
     </div>
-    <div >
-        <h2>Borrowed Copies</h2>
+    <div class="datatable_univ">
+        <h2 class="datatable_title">Edit Book</h2>
 
     </div>
-    <div >
-        <h2>Edit Book</h2>
+    <div class="datatable_univ">
+        <h2 class="datatable_title">Edit copy</h2>
 
     </div>
-    <div >
-        <h2>Edit copy</h2>
-
-    </div>
-    <div >
-        <h2>History of Borrows</h2>
+    <div class="datatable_univ">
+        <h2 class="datatable_title">History of Borrows</h2>
 
     </div>
 

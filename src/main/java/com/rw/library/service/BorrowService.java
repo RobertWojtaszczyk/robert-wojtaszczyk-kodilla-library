@@ -1,7 +1,6 @@
 package com.rw.library.service;
 
 import com.rw.library.domain.Borrow;
-import com.rw.library.domain.BorrowedDto;
 import com.rw.library.domain.Copy;
 import com.rw.library.domain.Reader;
 
@@ -11,5 +10,5 @@ public interface BorrowService extends CRUDService<Borrow> {
     void returnBook(Long borrowId);
     List<Borrow> findAllByCopyAndReturnDateIsNull(Copy copy);
     List<Borrow> findAllByReaderAndReturnDateIsNull(Reader reader);
-    List<BorrowedDto> getBooksToReturn(final Long reader_id);
+    List<Borrow> getBorrowedBooks(final Long reader_id);
 }

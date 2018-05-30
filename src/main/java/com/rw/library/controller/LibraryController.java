@@ -5,7 +5,6 @@ import com.rw.library.mapper.DomainMapper;
 import com.rw.library.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,13 +18,14 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class LibraryController {
     private static final Logger LOGGER = LoggerFactory.getLogger(LibraryController.class);
 
+    //    @Autowired
     private final BookService bookService;
     private final CopyService copyService;
     private final ReaderService readerService;
     private final BorrowService borrowService;
     private final DomainMapper domainMapper;
 
-    @Autowired
+
     public LibraryController(BookService bookService, CopyService copyService, ReaderService readerService, BorrowService borrowService, DomainMapper domainMapper) {
         this.bookService = bookService;
         this.copyService = copyService;
@@ -71,7 +71,7 @@ public class LibraryController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/getBooksToReturnByReader")
     public List<BorrowedDto> getBooksToReturnByReader(@RequestParam Long reader_id) {
-        return borrowService.getBooksToReturn(reader_id);
+        return domainMapper.mapToBorrowedList(borrowService.getBorrowedBooks(reader_id));
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/createBook", consumes = APPLICATION_JSON_VALUE)
