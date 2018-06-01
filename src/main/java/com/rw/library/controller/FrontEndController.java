@@ -34,20 +34,13 @@ public class FrontEndController {
     private static final int INITIAL_PAGE_SIZE = 5;
     private static final int[] PAGE_SIZES = { 5, 10};
 
-
+    @Autowired
     public FrontEndController(BookService bookService, CopyService copyService, ReaderService readerService, BorrowService borrowService, DomainMapper domainMapper) {
         this.bookService = bookService;
         this.copyService = copyService;
         this.readerService = readerService;
         this.borrowService = borrowService;
         this.domainMapper = domainMapper;
-    }
-
-    private BookRepository bookRepository;
-
-    @Autowired
-    public void setBookRepository(BookRepository bookRepository) {
-        this.bookRepository = bookRepository;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/")
@@ -64,8 +57,6 @@ public class FrontEndController {
 
         int evalPageSize = pageSize.orElse(INITIAL_PAGE_SIZE);
         int evalPage = (page.orElse(0) < 1) ? INITIAL_PAGE : page.get() - 1;
-
-        //Page<Book> bookslist = bookRepository.findAll(new PageRequest(evalPage, evalPageSize));
 
         Page<Book> bookslist = (bookService.listAllPageable(new PageRequest(evalPage, evalPageSize)));
         Pager pager = new Pager(bookslist.getTotalPages(),bookslist.getNumber(),BUTTONS_TO_SHOW);

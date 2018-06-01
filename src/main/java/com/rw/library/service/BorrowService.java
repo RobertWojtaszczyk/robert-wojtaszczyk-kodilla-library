@@ -10,5 +10,5 @@ public interface BorrowService extends CRUDService<Borrow> {
     void returnBook(Long borrowId);
     List<Borrow> findAllByCopyAndReturnDateIsNull(Copy copy);
     List<Borrow> findAllByReaderAndReturnDateIsNull(Reader reader);
-    List<Borrow> getBorrowedBooks(final Long reader_id);
+    List<Borrow> getBorrowedBooks(Reader reader);
 }

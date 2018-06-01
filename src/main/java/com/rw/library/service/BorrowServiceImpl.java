@@ -20,12 +20,10 @@ import static java.util.Optional.ofNullable;
 @Service
 public class BorrowServiceImpl implements BorrowService {
     private final BorrowRepository borrowRepository;
-    private final ReaderService readerService; // można tu korzystać z innych serwisów?????
 
     @Autowired
-    public BorrowServiceImpl(final BorrowRepository borrowRepository, final ReaderService readerService) {
+    public BorrowServiceImpl(final BorrowRepository borrowRepository) {
         this.borrowRepository = borrowRepository;
-        this.readerService = readerService;
     }
 
     @Override
@@ -41,8 +39,8 @@ public class BorrowServiceImpl implements BorrowService {
     }
 
     @Override
-    public Borrow saveOrUpdate(Borrow domainObject) {
-        return ofNullable(borrowRepository.save(domainObject)).orElse(new Borrow());
+    public Borrow saveOrUpdate(Borrow borrow) {
+        return ofNullable(borrowRepository.save(borrow)).orElse(new Borrow());
     }
 
     @Override
@@ -68,7 +66,7 @@ public class BorrowServiceImpl implements BorrowService {
     }
 
     @Override
-    public List<Borrow> getBorrowedBooks(final Long reader_id) {
-        return new ArrayList<>(findAllByReaderAndReturnDateIsNull(readerService.getById(reader_id)));
+    public List<Borrow> getBorrowedBooks(final Reader reader) {
+        return new ArrayList<>(findAllByReaderAndReturnDateIsNull(reader));
     }
 }

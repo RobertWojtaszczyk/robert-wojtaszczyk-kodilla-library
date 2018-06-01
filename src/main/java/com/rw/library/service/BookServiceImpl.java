@@ -1,7 +1,6 @@
 package com.rw.library.service;
 
 import com.rw.library.domain.Book;
-import com.rw.library.domain.BookDto;
 import com.rw.library.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -50,14 +49,14 @@ public class BookServiceImpl implements BookService {
         return ofNullable(bookRepository.save(book)).orElse(new Book());
     }
 
-    @Override //??????? poprawić DTO na BOOK!!! tu nie ma być DTO!!!
-    public Book update(BookDto bookDto) {
-            Book book = bookRepository.findOne(bookDto.getId()); //nullPointerException if book not exists
-            if (!bookDto.getAuthor().equals(book.getAuthor())) {
-                book.setAuthor(ofNullable(bookDto.getAuthor()).orElse(book.getAuthor()));
+    @Override
+    public Book update(Book updatedBook) {
+            Book book = bookRepository.findOne(updatedBook.getId()); //nullPointerException if book not exists
+            if (!updatedBook.getAuthor().equals(book.getAuthor())) {
+                book.setAuthor(ofNullable(updatedBook.getAuthor()).orElse(book.getAuthor()));
             }
-            if (!bookDto.getTitle().equals(book.getTitle())) {
-                book.setTitle(ofNullable(bookDto.getTitle()).orElse(book.getTitle()));
+            if (!updatedBook.getTitle().equals(book.getTitle())) {
+                book.setTitle(ofNullable(updatedBook.getTitle()).orElse(book.getTitle()));
             }
             return ofNullable(bookRepository.save(book)).orElse(new Book());
     }

@@ -2,7 +2,6 @@ package com.rw.library.service;
 
 import com.rw.library.domain.Book;
 import com.rw.library.domain.Copy;
-import com.rw.library.domain.CopyDto;
 import com.rw.library.repository.BookRepository;
 import com.rw.library.repository.CopyRepository;
 import org.slf4j.Logger;
@@ -14,19 +13,16 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Transactional
 @Service
 public class CopyServiceImpl implements CopyService {
     private final CopyRepository copyRepository;
-    private final BookRepository bookRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(CopyServiceImpl.class);
 
     @Autowired
-    public CopyServiceImpl(final CopyRepository copyRepository, final BookRepository bookRepository) {
+    public CopyServiceImpl(final CopyRepository copyRepository) {
         this.copyRepository = copyRepository;
-        this.bookRepository = bookRepository;
     }
 
     @Override
@@ -42,7 +38,6 @@ public class CopyServiceImpl implements CopyService {
             LOGGER.warn("Copy by id=" + id + " not found. Method: Copy getById(Long id)");
             return new Copy(); // null???
         });
-
     }
 
     @Override
@@ -53,11 +48,10 @@ public class CopyServiceImpl implements CopyService {
         });
     }
 
-    @Override // Poprawić, nie może tu być Dto!!! tylko Copy!!!
-    public Copy update(CopyDto copyDto) {
-        Copy copy = copyRepository.findOne(copyDto.getId()); //nullPointerException if copy not exists
-        copy.setStatus(copyDto.getStatus()); // if not in Enum: org.springframework.http.converter.HttpMessageNotReadableException
-        copy.setBook(Optional.ofNullable(bookRepository.findOne(copyDto.getBookId())).orElse(copy.getBook()));  //nullPointerException if book not exists
+    @Override
+    public Copy update(Copy updatedCopy) {
+        Copy copy = copyRepository.findOne(updatedCopy.getId()); //nullPointerException if copy not exists
+        copy.setStatus(updatedCopy.getStatus()); // if not in Enum: org.springframework.http.converter.HttpMessageNotReadableException
         return Optional.ofNullable(copyRepository.save(copy)).orElse(new Copy());
     }
 
@@ -67,23 +61,9 @@ public class CopyServiceImpl implements CopyService {
     }
 
     @Override
-    @Query(nativeQuery=true)
-    public List<Copy> getListOfAvailableCopies(Long bookId) {
-        return copyRepository.getListOfAvailableCopies(bookId);
-    }
-
-    @Override
     @Query
-    public List<Copy> getListOfAvailableCopiesHQL(Long bookId) {
-        return copyRepository.getListOfAvailableCopiesHQL(bookId);
-    }
-
-    @Override
-    public List<Copy> getAvailableCopies(final Long bookId) {
-        return getByBook(bookRepository.findOne(bookId)).stream()
-                .filter(copy -> copy.getBorrows().stream()
-                        .allMatch(borrow -> borrow.getReturnDate() != null))
-                .collect(Collectors.toList());
+    public List<Copy> getAvailableCopies(Long bookId) {
+        return copyRepository.getAvailableCopies(bookId);
     }
 
     @Override

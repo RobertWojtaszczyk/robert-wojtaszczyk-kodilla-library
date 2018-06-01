@@ -44,8 +44,7 @@ public class DomainMapper {
                 reader.getName(),
                 reader.getSurname(),
                 reader.getBorrows().size(),
-                borrowService.getBorrowedBooks(reader.getId()).size()
-        );
+                borrowService.getBorrowedBooks(reader).size());
     }
 
     public List<ReaderDto> mapToReadersDtoList(final List<?> readers) {
@@ -53,6 +52,10 @@ public class DomainMapper {
                 .map(o -> (Reader)o)
                 .map(this::mapToReaderDto)
                 .collect(Collectors.toList());
+    }
+
+    public Reader mapReaderIdToReader(final Long readerId) {
+        return readerService.getById(readerId);
     }
 
     public Borrow mapToBorrow(final BorrowDto borrowDto) {

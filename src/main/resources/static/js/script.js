@@ -54,7 +54,7 @@ $(document).ready(function() {
             var data = borrowedTable.row($(this).parents('tr')).data();
             var urlReturnBook = 'http://localhost:8080/v1/library/returnBook?borrow_id='+data.id;
             // var id = readersTable.row(this).id();
-            var urlBorrowed = 'http://localhost:8080/v1/library/getBooksToReturnByReader?reader_id='+data.readerId;
+            var urlBorrowed = 'http://localhost:8080/v1/library/getBorrowedBooks?reader_id='+data.readerId;
             returnBook(urlReturnBook, urlBorrowed);
         } );
     }
@@ -152,7 +152,7 @@ $(document).ready(function() {
         $("#datatable_readers_row tbody").on( 'click', 'button', function () {
             var data = readersTable.row($(this).parents('tr')).data();
             // var id = readersTable.row($(this).parents('tr')).id();
-            var urlBorrowed = 'http://localhost:8080/v1/library/getBooksToReturnByReader?reader_id='+data.id;
+            var urlBorrowed = 'http://localhost:8080/v1/library/getBorrowedBooks?reader_id='+data.id;
             // alert("Requesting borrowed books data from: " + url);
             generateBorrowed(urlBorrowed);
         } );

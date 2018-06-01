@@ -5,6 +5,7 @@ import com.rw.library.mapper.DomainMapper;
 import com.rw.library.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class LibraryController {
     private final BorrowService borrowService;
     private final DomainMapper domainMapper;
 
-
+    @Autowired
     public LibraryController(BookService bookService, CopyService copyService, ReaderService readerService, BorrowService borrowService, DomainMapper domainMapper) {
         this.bookService = bookService;
         this.copyService = copyService;
@@ -39,14 +40,9 @@ public class LibraryController {
         return domainMapper.mapToCopyDtoList(copyService.getAvailableCopies(book_id));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/getAvailableCopiesSQL")
-    public List<CopyDto> getAvailableCopiesSQL(@RequestParam Long book_id) {
-        return domainMapper.mapToCopyDtoList(copyService.getListOfAvailableCopies(book_id));
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/getAvailableCopiesHQL")
-    public List<CopyDto> getAvailableCopiesHQL(@RequestParam Long book_id) {
-        return domainMapper.mapToCopyDtoList(copyService.getListOfAvailableCopiesHQL(book_id));
+    @RequestMapping(method = RequestMethod.GET, value = "/getBorrowedBooks")
+    public List<BorrowedDto> getBorrowedBooks(@RequestParam Long reader_id) {
+        return domainMapper.mapToBorrowedList(borrowService.getBorrowedBooks(domainMapper.mapReaderIdToReader(reader_id)));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getBooks")
@@ -67,11 +63,6 @@ public class LibraryController {
     @RequestMapping(method = RequestMethod.GET, value = "/getBorrows")
     public List<BorrowDto> getBorrows() {
         return domainMapper.mapToBorrowsDtoList(borrowService.listAll());
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/getBooksToReturnByReader")
-    public List<BorrowedDto> getBooksToReturnByReader(@RequestParam Long reader_id) {
-        return domainMapper.mapToBorrowedList(borrowService.getBorrowedBooks(reader_id));
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/createBook", consumes = APPLICATION_JSON_VALUE)
@@ -96,17 +87,17 @@ public class LibraryController {
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateBook", consumes = APPLICATION_JSON_VALUE)
     public BookDto updateBook(@RequestBody BookDto bookDto) {
-        return domainMapper.mapToBookDto(bookService.update(bookDto));
+        return domainMapper.mapToBookDto(bookService.update(domainMapper.mapToBook(bookDto)));
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateReader", consumes = APPLICATION_JSON_VALUE)
     public ReaderDto updateReader(@RequestBody ReaderDto readerDto) {
-        return domainMapper.mapToReaderDto(readerService.update(readerDto));
+        return domainMapper.mapToReaderDto(readerService.update(domainMapper.mapToReader(readerDto)));
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateCopy", consumes = APPLICATION_JSON_VALUE)
     public CopyDto updateCopy(@RequestBody CopyDto copyDto) {
-        return domainMapper.mapToCopyDto(copyService.update(copyDto));
+        return domainMapper.mapToCopyDto(copyService.update(domainMapper.mapToCopy(copyDto)));
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/returnBook")

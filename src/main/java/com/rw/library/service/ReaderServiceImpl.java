@@ -1,7 +1,6 @@
 package com.rw.library.service;
 
 import com.rw.library.domain.Reader;
-import com.rw.library.domain.ReaderDto;
 import com.rw.library.repository.ReaderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,18 +38,18 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     @Override
-    public Reader saveOrUpdate(Reader domainObject) {
-        return ofNullable(readerRepository.save(domainObject)).orElse(new Reader());
+    public Reader saveOrUpdate(Reader reader) {
+        return ofNullable(readerRepository.save(reader)).orElse(new Reader());
     }
 
-    @Override // Poprawić, nie może tu być DTO!!! tylko Reader!!!
-    public Reader update(ReaderDto readerDto) {
-        Reader reader = readerRepository.findOne(readerDto.getId()); //nullPointerException if reader not exists
-        if (!readerDto.getName().equals(reader.getName())) {
-            reader.setName(ofNullable(readerDto.getName()).orElse(reader.getName()));
+    @Override
+    public Reader update(Reader updatedReader) {
+        Reader reader = readerRepository.findOne(updatedReader.getId()); //nullPointerException if reader not exists
+        if (!updatedReader.getName().equals(reader.getName())) {
+            reader.setName(ofNullable(updatedReader.getName()).orElse(reader.getName()));
         }
-        if (!readerDto.getSurname().equals(reader.getSurname())) {
-            reader.setSurname(ofNullable(readerDto.getSurname()).orElse(reader.getSurname()));
+        if (!updatedReader.getSurname().equals(reader.getSurname())) {
+            reader.setSurname(ofNullable(updatedReader.getSurname()).orElse(reader.getSurname()));
         }
         return ofNullable(readerRepository.save(reader)).orElse(new Reader());
     }

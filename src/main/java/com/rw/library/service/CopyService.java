@@ -8,9 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface CopyService extends CRUDService<Copy> {
-    List<Copy> getAvailableCopies(final Long bookId);
-    List<Copy> getListOfAvailableCopies(@Param("BOOK_ID") Long bookId);
-    List<Copy> getListOfAvailableCopiesHQL(@Param("BOOK_ID") Long bookId);
+    List<Copy> getAvailableCopies(@Param("BOOK_ID") Long bookId);
     List<Copy> getByBook(Book book);
-    Copy update(CopyDto copyDto);
+    Copy update(Copy copy);
 }
