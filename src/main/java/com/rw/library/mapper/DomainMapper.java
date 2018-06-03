@@ -15,17 +15,15 @@ public class DomainMapper {
     private final BookService bookService;
     private final CopyService copyService;
     private final ReaderService readerService;
-    @Autowired
-    private BorrowService borrowService;
+    private final BorrowService borrowService;
 
     @Autowired
-    public DomainMapper(final BookService bookService, final CopyService copyService, final ReaderService readerService) {
+    public DomainMapper(final BookService bookService, final CopyService copyService, final ReaderService readerService, final BorrowService borrowService) {
         this.bookService = bookService;
         this.copyService = copyService;
         this.readerService = readerService;
+        this.borrowService = borrowService;
     }
-
-
 
     public Reader mapToReader(final ReaderDto readerDto) {
         return new Reader(

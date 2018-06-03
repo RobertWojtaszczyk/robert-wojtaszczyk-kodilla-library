@@ -31,7 +31,7 @@ public class FrontEndController {
     private final DomainMapper domainMapper;
     private static final int BUTTONS_TO_SHOW = 3;
     private static final int INITIAL_PAGE = 0;
-    private static final int INITIAL_PAGE_SIZE = 5;
+    private static final String INITIAL_PAGE_SIZE = "5";
     private static final int[] PAGE_SIZES = { 5, 10};
 
     @Autowired
@@ -51,17 +51,14 @@ public class FrontEndController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/books")
-    public ModelAndView homepage(@RequestParam("pageSize") Optional<Integer> pageSize, @RequestParam("page") Optional<Integer> page) {
-        //(@RequestParam(name = "pageSize", defaultValue = "1") int pageSize)
+    public ModelAndView homepage(@RequestParam(name = "pageSize", defaultValue = INITIAL_PAGE_SIZE) int pageSize, @RequestParam(name = "page", defaultValue = "0") int page) {
         ModelAndView modelAndView = new ModelAndView("books");
+        int evalPage = (page < 1) ? INITIAL_PAGE : page - 1;
 
-        int evalPageSize = pageSize.orElse(INITIAL_PAGE_SIZE);
-        int evalPage = (page.orElse(0) < 1) ? INITIAL_PAGE : page.get() - 1;
-
-        Page<Book> bookslist = (bookService.listAllPageable(new PageRequest(evalPage, evalPageSize)));
-        Pager pager = new Pager(bookslist.getTotalPages(),bookslist.getNumber(),BUTTONS_TO_SHOW);
-        modelAndView.addObject("bookslist",bookslist);
-        modelAndView.addObject("selectedPageSize", evalPageSize);
+        Page<Book> booksList = (bookService.listAllPageable(new PageRequest(evalPage, pageSize)));
+        Pager pager = new Pager(booksList.getTotalPages(),booksList.getNumber(),BUTTONS_TO_SHOW);
+        modelAndView.addObject("bookslist", booksList);
+        modelAndView.addObject("selectedPageSize", pageSize);
         modelAndView.addObject("pageSizes", PAGE_SIZES);
         modelAndView.addObject("pager", pager);
         return modelAndView;

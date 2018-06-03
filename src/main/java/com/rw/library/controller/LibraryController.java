@@ -19,7 +19,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class LibraryController {
     private static final Logger LOGGER = LoggerFactory.getLogger(LibraryController.class);
 
-    //    @Autowired
     private final BookService bookService;
     private final CopyService copyService;
     private final ReaderService readerService;
@@ -45,6 +44,11 @@ public class LibraryController {
         return domainMapper.mapToBorrowedList(borrowService.getBorrowedBooks(domainMapper.mapReaderIdToReader(reader_id)));
     }
 
+    @RequestMapping(method = RequestMethod.PUT, value = "/returnBook")
+    public void returnBook(@RequestParam Long borrow_id) {
+        borrowService.returnBook(borrow_id);
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "/getBooks")
     public List<BookDto> getBooks() {
         return domainMapper.mapToBookDtoList(bookService.listAll());
@@ -58,6 +62,14 @@ public class LibraryController {
     @RequestMapping(method = RequestMethod.GET, value = "/getReaders")
     public List<ReaderDto> getReaders() {
         return domainMapper.mapToReadersDtoList(readerService.listAll());
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/getCopy")
+    public CopyDto getCopy(@RequestParam Long copy_id) {
+        return Optional.ofNullable(domainMapper.mapToCopyDto(copyService.getById(copy_id)))
+                .orElseGet(() -> {
+                    LOGGER.warn("Copy by id=" + copy_id + " not found!");
+                    return new CopyDto();});
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getBorrows")
@@ -98,18 +110,5 @@ public class LibraryController {
     @RequestMapping(method = RequestMethod.PUT, value = "/updateCopy", consumes = APPLICATION_JSON_VALUE)
     public CopyDto updateCopy(@RequestBody CopyDto copyDto) {
         return domainMapper.mapToCopyDto(copyService.update(domainMapper.mapToCopy(copyDto)));
-    }
-
-    @RequestMapping(method = RequestMethod.PUT, value = "/returnBook")
-    public void returnBook(@RequestParam Long borrow_id) {
-        borrowService.returnBook(borrow_id);
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/getCopy")
-    public CopyDto getCopy(@RequestParam Long copy_id) {
-        return Optional.ofNullable(domainMapper.mapToCopyDto(copyService.getById(copy_id)))
-                .orElseGet(() -> {
-                    LOGGER.warn("Copy by id=" + copy_id + " not found!");
-                    return new CopyDto();});
     }
 }

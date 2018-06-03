@@ -1,10 +1,10 @@
 package com.rw.library.domain;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -21,9 +21,9 @@ public class Reader extends AbstractDomainClass {
         this.surname = surname;
     }
 
-    @NotEmpty(message = "*Please provide a name")
+    @Size(min = 3, max = 255, message = "Please enter firstname, between {min} and {max} characters.")
     private String name;
-    @NotEmpty(message = "*Please provide a surname")
+    @Size(min = 3, max = 255, message = "Please enter lastname, between {min} and {max} characters.")
     private String surname;
     @OneToMany(
             targetEntity = Borrow.class,

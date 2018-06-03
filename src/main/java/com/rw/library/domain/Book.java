@@ -3,6 +3,7 @@ package com.rw.library.domain;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
@@ -20,9 +21,10 @@ public class Book extends AbstractDomainClass {
         this.title = title;
         this.author = author;
     }
-    @NotEmpty(message = "*Please provide a title")
+//    @NotEmpty(message = "*Please provide a title")
+    @Size(min = 3, max = 255, message = "Please enter book title, between {min} and {max} characters.")
     private String title;
-    @NotEmpty(message = "*Please provide a author")
+    @Size(min = 3, max = 255, message = "Please enter author name, between {min} and {max} characters.")
     private String author;
     @OneToMany(
             targetEntity = Copy.class,
