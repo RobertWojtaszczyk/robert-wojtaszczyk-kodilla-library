@@ -2,17 +2,20 @@ package com.rw.library.controller;
 
 import com.rw.library.domain.*;
 import com.rw.library.mapper.DomainMapper;
-import com.rw.library.service.*;
+import com.rw.library.service.BookService;
+import com.rw.library.service.BorrowService;
+import com.rw.library.service.CopyService;
+import com.rw.library.service.ReaderService;
 import com.rw.library.validator.BookValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -80,37 +83,37 @@ public class LibraryController {
         return domainMapper.mapToBorrowsDtoList(borrowService.listAll());
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/createBook", consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.POST, value = "/createBook", consumes = MediaType.APPLICATION_JSON_VALUE)
     public BookDto createBook(@RequestBody BookDto bookDto) {
         return domainMapper.mapToBookDto(bookService.saveOrUpdate(domainMapper.mapToBook(bookDto)));
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/createCopy", consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.POST, value = "/createCopy", consumes = MediaType.APPLICATION_JSON_VALUE)
     public CopyDto createCopy(@RequestBody CopyDto copyDto) {
         return domainMapper.mapToCopyDto(copyService.saveOrUpdate(domainMapper.mapToCopy(copyDto)));
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/createReader", consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.POST, value = "/createReader", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ReaderDto createReader(@RequestBody ReaderDto readerDto) {
         return domainMapper.mapToReaderDto(readerService.saveOrUpdate(domainMapper.mapToReader(readerDto)));
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/createBorrow", consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.POST, value = "/createBorrow", consumes = MediaType.APPLICATION_JSON_VALUE)
     public BorrowDto createBorrow(@RequestBody BorrowDto borrowDto) {
         return domainMapper.mapToBorrowDto(borrowService.saveOrUpdate(domainMapper.mapToBorrow(borrowDto)));
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/updateBook", consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.PUT, value = "/updateBook", consumes = MediaType.APPLICATION_JSON_VALUE)
     public BookDto updateBook(@RequestBody BookDto bookDto) {
         return domainMapper.mapToBookDto(bookService.update(domainMapper.mapToBook(bookDto)));
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/updateReader", consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.PUT, value = "/updateReader", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ReaderDto updateReader(@RequestBody ReaderDto readerDto) {
         return domainMapper.mapToReaderDto(readerService.update(domainMapper.mapToReader(readerDto)));
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/updateCopy", consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.PUT, value = "/updateCopy", consumes = MediaType.APPLICATION_JSON_VALUE)
     public CopyDto updateCopy(@RequestBody CopyDto copyDto) {
         return domainMapper.mapToCopyDto(copyService.update(domainMapper.mapToCopy(copyDto)));
     }

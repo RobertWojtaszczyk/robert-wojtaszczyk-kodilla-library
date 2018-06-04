@@ -1,7 +1,10 @@
 package com.rw.library.mapper;
 
 import com.rw.library.domain.*;
-import com.rw.library.service.*;
+import com.rw.library.service.BookService;
+import com.rw.library.service.BorrowService;
+import com.rw.library.service.CopyService;
+import com.rw.library.service.ReaderService;
 import com.rw.library.validator.BookValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

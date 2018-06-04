@@ -18,6 +18,12 @@
         .pointer-disabled {
             pointer-events: none;
         }
+        .book_update_form {
+            display: none;
+        }
+        .book_update_form_active {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -40,6 +46,7 @@
                 <th>Title</th>
                 <th>Author</th>
                 <th>Show Copies</th>
+                <th>Update Book</th>
                 <th>Delete Book</th>
             </tr>
             </thead>
@@ -52,10 +59,15 @@
                     <i class="glyphicon glyphicon-list"></i>
                 </button></td>
                 <td><button type="button"
+                            id="update-button"
+                            class="btn btn-primary btn-condensed"
+                            th:attr="book-id=${bookslist.id}">
+                    <i class="glyphicon glyphicon-edit"></i>
+                </button></td>
+                <td><button type="button"
                             id="delete-button"
                             class="btn btn-primary btn-condensed"
-                            th:attr="book-id=${bookslist.id}"
-                            >
+                            th:attr="book-id=${bookslist.id}">
                     <i class="glyphicon glyphicon-remove"></i>
                 </button></td>
             </tr>
@@ -109,8 +121,7 @@
                 class="add_book_form"
                 method="POST"
                 action="http://localhost:8080/v1/library/createBook2"
-                id="book-add-form"
-        >
+                id="book-add-form">
             <fieldset>
                 <label>
                     Book title
@@ -131,6 +142,35 @@
         </form>
 
     </div>
+
+    <div>
+        <!--Add Update Form-->
+        <form
+                class="book_update_form"
+                method="PUT"
+                action="http://localhost:8080/v1/library/updateBook2"
+                id="book-update-form">
+            <fieldset>
+                <label>
+                    Book title
+                </label>
+                <input type="text" name="title" placeholder="Insert book new title"/>
+            </fieldset>
+
+            <fieldset>
+                <label>
+                    Book author
+                </label>
+                <input type="text" name="author" placeholder="Insert book new author"/>
+            </fieldset>
+
+            <fieldset>
+                <button type="submit" name="update-book-button" class="update__button">Update a book</button>
+            </fieldset>
+        </form>
+
+    </div>
+
 </div>
 <script
         src="https://code.jquery.com/jquery-1.11.1.min.js"
@@ -172,6 +212,34 @@
             });
         }
 
+        function handleBookUpdateSubmitRequest(event) {
+            event.preventDefault();
+
+            var bookId = $(this).attr("book-id");
+            var bookTitle = $(this).find('[name="title"]').val();
+            var bookAuthor = $(this).find('[name="author"]').val();
+
+            var requestUrl = "http://localhost:8080/v1/library/updateBook";
+
+            $.ajax({
+                url: requestUrl,
+                method: 'PUT',
+                processData: false,
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                data: JSON.stringify({
+                    id: bookId,
+                    title: bookTitle,
+                    author: bookAuthor
+                }),
+                complete: function(data) {
+                    if(data.status === 200) {
+                        location.reload();
+                    }
+                }
+            });
+        }
+
         function handleDeleteBook() {
             var parentEl = $(this).parents('#book-row');
             var bookId = $(this).attr("book-id");
@@ -188,8 +256,15 @@
             })
         }
 
+        function handleUpdateBookButton() {
+            var bookId = $(this).attr("book-id");
+            $('#book-update-form').attr('book-id', bookId).toggleClass('book_update_form_active');
+        }
+
         $('#book-add-form').on('submit', handleBookSubmitRequest);
+        $('#book-update-form').on('submit', handleBookUpdateSubmitRequest);
         $booksContainer.on('click','#delete-button', handleDeleteBook);
+        $booksContainer.on('click','#update-button', handleUpdateBookButton);
     });
     function changePageAndSize() {
         $('#pageSizeSelect').change(function(evt) {

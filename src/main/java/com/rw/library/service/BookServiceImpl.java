@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import static java.util.Optional.ofNullable;
+import java.util.Optional;
 
 @Transactional
 @Service
@@ -24,7 +24,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book findByAuthor(String author) {
-        return ofNullable(bookRepository.findByAuthor(author)).orElse(new Book());
+        return Optional.ofNullable(bookRepository.findByAuthor(author)).orElse(new Book());
     }
 
     @Override
@@ -46,24 +46,20 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book getById(Long id) {
-        return ofNullable(bookRepository.findOne(id)).orElse(new Book());
+        return Optional.ofNullable(bookRepository.findOne(id)).orElse(new Book());
     }
 
     @Override
     public Book saveOrUpdate(final Book book) {
-        return ofNullable(bookRepository.save(book)).orElse(new Book());
+        return Optional.ofNullable(bookRepository.save(book)).orElse(new Book());
     }
 
     @Override
     public Book update(Book updatedBook) {
-            Book book = bookRepository.findOne(updatedBook.getId()); //nullPointerException if book not exists
-            if (!updatedBook.getAuthor().equals(book.getAuthor())) {
-                book.setAuthor(ofNullable(updatedBook.getAuthor()).orElse(book.getAuthor()));
-            }
-            if (!updatedBook.getTitle().equals(book.getTitle())) {
-                book.setTitle(ofNullable(updatedBook.getTitle()).orElse(book.getTitle()));
-            }
-            return ofNullable(bookRepository.save(book)).orElse(new Book());
+            Book book = bookRepository.findOne(updatedBook.getId());
+            book.setAuthor(updatedBook.getAuthor());
+            book.setTitle(updatedBook.getTitle());
+            return Optional.ofNullable(bookRepository.save(book)).orElse(new Book());
     }
 
     @Override

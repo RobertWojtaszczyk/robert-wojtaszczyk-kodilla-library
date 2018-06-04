@@ -3,7 +3,6 @@ package com.rw.library.controller;
 import com.rw.library.domain.Book;
 import com.rw.library.domain.Paging.Pager;
 import com.rw.library.mapper.DomainMapper;
-import com.rw.library.repository.BookRepository;
 import com.rw.library.service.BookService;
 import com.rw.library.service.BorrowService;
 import com.rw.library.service.CopyService;
@@ -18,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.Optional;
 
 @CrossOrigin(origins = "*")
 @Controller

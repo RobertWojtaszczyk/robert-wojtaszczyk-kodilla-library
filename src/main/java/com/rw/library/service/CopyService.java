@@ -2,7 +2,6 @@ package com.rw.library.service;
 
 import com.rw.library.domain.Book;
 import com.rw.library.domain.Copy;
-import com.rw.library.domain.CopyDto;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;

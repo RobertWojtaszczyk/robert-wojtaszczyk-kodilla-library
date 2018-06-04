@@ -2,13 +2,13 @@ package com.rw.library.service;
 
 import com.rw.library.domain.Book;
 import com.rw.library.domain.Copy;
-import com.rw.library.repository.BookRepository;
 import com.rw.library.repository.CopyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
+
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import static java.util.Optional.ofNullable;
+import java.util.Optional;
 
 @Transactional
 @Service
@@ -22,7 +22,7 @@ public class ReaderServiceImpl implements ReaderService {
 
     @Override
     public Reader findBySurname(String surname) {
-        return ofNullable(readerRepository.findBySurname(surname)).orElse(new Reader());
+        return Optional.ofNullable(readerRepository.findBySurname(surname)).orElse(new Reader());
     }
 
     @Override
@@ -34,24 +34,24 @@ public class ReaderServiceImpl implements ReaderService {
 
     @Override
     public Reader getById(Long id) {
-        return ofNullable(readerRepository.findOne(id)).orElse(new Reader());
+        return Optional.ofNullable(readerRepository.findOne(id)).orElse(new Reader());
     }
 
     @Override
     public Reader saveOrUpdate(Reader reader) {
-        return ofNullable(readerRepository.save(reader)).orElse(new Reader());
+        return Optional.ofNullable(readerRepository.save(reader)).orElse(new Reader());
     }
 
     @Override
     public Reader update(Reader updatedReader) {
         Reader reader = readerRepository.findOne(updatedReader.getId()); //nullPointerException if reader not exists
         if (!updatedReader.getName().equals(reader.getName())) {
-            reader.setName(ofNullable(updatedReader.getName()).orElse(reader.getName()));
+            reader.setName(Optional.ofNullable(updatedReader.getName()).orElse(reader.getName()));
         }
         if (!updatedReader.getSurname().equals(reader.getSurname())) {
-            reader.setSurname(ofNullable(updatedReader.getSurname()).orElse(reader.getSurname()));
+            reader.setSurname(Optional.ofNullable(updatedReader.getSurname()).orElse(reader.getSurname()));
         }
-        return ofNullable(readerRepository.save(reader)).orElse(new Reader());
+        return Optional.ofNullable(readerRepository.save(reader)).orElse(new Reader());
     }
 
     @Override

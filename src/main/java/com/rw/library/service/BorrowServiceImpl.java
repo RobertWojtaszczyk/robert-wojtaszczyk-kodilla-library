@@ -1,10 +1,8 @@
 package com.rw.library.service;
 
 import com.rw.library.domain.Borrow;
-import com.rw.library.domain.BorrowedDto;
 import com.rw.library.domain.Copy;
 import com.rw.library.domain.Reader;
-import com.rw.library.mapper.DomainMapper;
 import com.rw.library.repository.BorrowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,8 +11,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.Optional.ofNullable;
+import java.util.Optional;
 
 @Transactional
 @Service
@@ -35,12 +32,12 @@ public class BorrowServiceImpl implements BorrowService {
 
     @Override
     public Borrow getById(Long id) {
-        return ofNullable(borrowRepository.findOne(id)).orElse(new Borrow());
+        return Optional.ofNullable(borrowRepository.findOne(id)).orElse(new Borrow());
     }
 
     @Override
     public Borrow saveOrUpdate(Borrow borrow) {
-        return ofNullable(borrowRepository.save(borrow)).orElse(new Borrow());
+        return Optional.ofNullable(borrowRepository.save(borrow)).orElse(new Borrow());
     }
 
     @Override
