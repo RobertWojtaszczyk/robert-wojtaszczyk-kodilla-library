@@ -2,6 +2,7 @@ package com.rw.library.mapper;
 
 import com.rw.library.domain.*;
 import com.rw.library.service.*;
+import com.rw.library.validator.BookValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,13 +17,15 @@ public class DomainMapper {
     private final CopyService copyService;
     private final ReaderService readerService;
     private final BorrowService borrowService;
+    private final BookValidator bookValidator;
 
     @Autowired
-    public DomainMapper(final BookService bookService, final CopyService copyService, final ReaderService readerService, final BorrowService borrowService) {
+    public DomainMapper(final BookService bookService, final CopyService copyService, final ReaderService readerService, final BorrowService borrowService, final BookValidator bookValidator) {
         this.bookService = bookService;
         this.copyService = copyService;
         this.readerService = readerService;
         this.borrowService = borrowService;
+        this.bookValidator = bookValidator;
     }
 
     public Reader mapToReader(final ReaderDto readerDto) {
@@ -88,11 +91,12 @@ public class DomainMapper {
     }
 
     public Book mapToBook(final BookDto bookDto) {
+        BookDto validatedBookDto = bookValidator.validateBook(bookDto);
         return new Book(
-                bookDto.getId(),
+                validatedBookDto.getId(),
                 null,
-                bookDto.getTitle(),
-                bookDto.getAuthor()
+                validatedBookDto.getTitle(),
+                validatedBookDto.getAuthor()
         );
     }
 

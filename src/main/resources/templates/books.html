@@ -22,14 +22,14 @@
 </head>
 <body>
 <!-- START PAGE CONTAINER -->
-<div class="container-fluid">
+<div class="container-fluid" id="books-container">
     <!-- START PAGE SIDEBAR -->
     <!-- commented out     <div th:replace="fragments/header :: header"> </div> -->
     <!-- END PAGE SIDEBAR -->
     <!-- PAGE TITLE -->
     <div class="page-title">
         <h2>
-            <span class="fa fa-arrow-circle-o-left"></span> Books Viewer
+            <span class="fa fa-arrow-circle-o-left"></span> Books Interface
         </h2>
     </div>
     <!-- END PAGE TITLE -->
@@ -40,15 +40,23 @@
                 <th>Title</th>
                 <th>Author</th>
                 <th>Show Copies</th>
+                <th>Delete Book</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="bookslist : ${bookslist}">
+            <tr th:each="bookslist : ${bookslist}" id="book-row">
                 <td th:text="${bookslist.title}">Text ...</td>
                 <td th:text="${bookslist.author}">Text ...</td>
                 <td><button type="button"
                             class="btn btn-primary btn-condensed">
                     <i class="glyphicon glyphicon-list"></i>
+                </button></td>
+                <td><button type="button"
+                            id="delete-button"
+                            class="btn btn-primary btn-condensed"
+                            th:attr="book-id=${bookslist.id}"
+                            >
+                    <i class="glyphicon glyphicon-remove"></i>
                 </button></td>
             </tr>
             </tbody>
@@ -95,6 +103,34 @@
     </div>
     <!-- END PAGE CONTENT -->
     <!-- END PAGE CONTAINER -->
+    <div>
+        <!--Add Book Form-->
+        <form
+                class="add_book_form"
+                method="POST"
+                action="http://localhost:8080/v1/library/createBook2"
+                id="book-add-form"
+        >
+            <fieldset>
+                <label>
+                    Book title
+                </label>
+                <input type="text" name="title" placeholder="Insert new book title"/>
+            </fieldset>
+
+            <fieldset>
+                <label>
+                    Book author
+                </label>
+                <input type="text" name="author" placeholder="Insert new book author"/>
+            </fieldset>
+
+            <fieldset>
+                <button type="submit" name="book-add-button" class="add__button">Add a book</button>
+            </fieldset>
+        </form>
+
+    </div>
 </div>
 <script
         src="https://code.jquery.com/jquery-1.11.1.min.js"
@@ -107,13 +143,62 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     $(document).ready(function() {
+        const $booksContainer = $('#books-container');
         changePageAndSize();
+
+        function handleBookSubmitRequest(event) {
+            event.preventDefault();
+
+            var bookTitle = $(this).find('[name="title"]').val();
+            var bookAuthor = $(this).find('[name="author"]').val();
+
+            var requestUrl = "http://localhost:8080/v1/library/createBook";
+
+            $.ajax({
+                url: requestUrl,
+                method: 'POST',
+                processData: false,
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                data: JSON.stringify({
+                    title: bookTitle,
+                    author: bookAuthor
+                }),
+                complete: function(data) {
+                    if(data.status === 200) {
+                        location.reload();
+                    }
+                }
+            });
+        }
+
+        function handleDeleteBook() {
+            var parentEl = $(this).parents('#book-row');
+            var bookId = $(this).attr("book-id");
+            var requestUrl = "http://localhost:8080/v1/library/deleteBook";
+
+            $.ajax({
+                url: requestUrl + '/?' + $.param({
+                    bookId: bookId
+                }),
+                method: 'DELETE',
+                success: function() {
+                    parentEl.slideUp(400, function() { parentEl.remove(); });
+                }
+            })
+        }
+
+        $('#book-add-form').on('submit', handleBookSubmitRequest);
+        $booksContainer.on('click','#delete-button', handleDeleteBook);
     });
     function changePageAndSize() {
         $('#pageSizeSelect').change(function(evt) {
             window.location.replace("/books?pageSize=" + this.value + "&page=1");
         });
     }
+
+
+
     /*]]>*/
 </script>
 </body>

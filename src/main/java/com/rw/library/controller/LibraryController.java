@@ -3,6 +3,7 @@ package com.rw.library.controller;
 import com.rw.library.domain.*;
 import com.rw.library.mapper.DomainMapper;
 import com.rw.library.service.*;
+import com.rw.library.validator.BookValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +25,16 @@ public class LibraryController {
     private final ReaderService readerService;
     private final BorrowService borrowService;
     private final DomainMapper domainMapper;
+    private final BookValidator bookValidator;
 
     @Autowired
-    public LibraryController(BookService bookService, CopyService copyService, ReaderService readerService, BorrowService borrowService, DomainMapper domainMapper) {
+    public LibraryController(final BookService bookService, final CopyService copyService, final ReaderService readerService, final BorrowService borrowService, final DomainMapper domainMapper, final BookValidator bookValidator) {
         this.bookService = bookService;
         this.copyService = copyService;
         this.readerService = readerService;
         this.borrowService = borrowService;
         this.domainMapper = domainMapper;
+        this.bookValidator = bookValidator;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getAvailableCopies")
@@ -78,23 +81,23 @@ public class LibraryController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/createBook", consumes = APPLICATION_JSON_VALUE)
-    public void createBook(@RequestBody BookDto bookDto) {
-        bookService.saveOrUpdate(domainMapper.mapToBook(bookDto));
+    public BookDto createBook(@RequestBody BookDto bookDto) {
+        return domainMapper.mapToBookDto(bookService.saveOrUpdate(domainMapper.mapToBook(bookDto)));
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/createCopy", consumes = APPLICATION_JSON_VALUE)
-    public void createCopy(@RequestBody CopyDto copyDto) {
-        copyService.saveOrUpdate(domainMapper.mapToCopy(copyDto));
+    public CopyDto createCopy(@RequestBody CopyDto copyDto) {
+        return domainMapper.mapToCopyDto(copyService.saveOrUpdate(domainMapper.mapToCopy(copyDto)));
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/createReader", consumes = APPLICATION_JSON_VALUE)
-    public void createReader(@RequestBody ReaderDto readerDto) {
-        readerService.saveOrUpdate(domainMapper.mapToReader(readerDto));
+    public ReaderDto createReader(@RequestBody ReaderDto readerDto) {
+        return domainMapper.mapToReaderDto(readerService.saveOrUpdate(domainMapper.mapToReader(readerDto)));
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/createBorrow", consumes = APPLICATION_JSON_VALUE)
-    public void createBorrow(@RequestBody BorrowDto borrowDto) {
-        borrowService.saveOrUpdate(domainMapper.mapToBorrow(borrowDto));
+    public BorrowDto createBorrow(@RequestBody BorrowDto borrowDto) {
+        return domainMapper.mapToBorrowDto(borrowService.saveOrUpdate(domainMapper.mapToBorrow(borrowDto)));
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateBook", consumes = APPLICATION_JSON_VALUE)
@@ -110,5 +113,12 @@ public class LibraryController {
     @RequestMapping(method = RequestMethod.PUT, value = "/updateCopy", consumes = APPLICATION_JSON_VALUE)
     public CopyDto updateCopy(@RequestBody CopyDto copyDto) {
         return domainMapper.mapToCopyDto(copyService.update(domainMapper.mapToCopy(copyDto)));
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/deleteBook")
+    public void deleteBook(@RequestParam Long bookId) {
+        if (bookValidator.validateId(bookId)) {
+            bookService.delete(bookId);
+        }
     }
 }

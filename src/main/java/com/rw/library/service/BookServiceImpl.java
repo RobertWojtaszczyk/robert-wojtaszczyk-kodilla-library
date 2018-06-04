@@ -40,6 +40,11 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public boolean isValidId(final Long id) {
+            return bookRepository.exists(id);
+    }
+
+    @Override
     public Book getById(Long id) {
         return ofNullable(bookRepository.findOne(id)).orElse(new Book());
     }
