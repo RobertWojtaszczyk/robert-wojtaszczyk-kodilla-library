@@ -26,6 +26,7 @@ import java.util.List;
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(RestResponseEntityExceptionHandler.class);
+
     public RestResponseEntityExceptionHandler() {
         super();
     }
@@ -38,9 +39,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
             errors.add(violation.getRootBeanClass().getName() + " " +
                     violation.getPropertyPath() + ": " + violation.getMessage());
         }
-
-        ApiError apiError =
-                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
         LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors());
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
@@ -58,9 +57,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
             errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
         }
-
-        ApiError apiError =
-                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
         LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors());
         return handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
     }
@@ -70,9 +67,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
             MissingServletRequestParameterException ex, HttpHeaders headers,
             HttpStatus status, WebRequest request) {
         String error = ex.getParameterName() + " parameter is missing";
-
-        ApiError apiError =
-                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
         LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors());
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
@@ -81,9 +76,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(
             MethodArgumentTypeMismatchException ex, WebRequest request) {
         String error = ex.getName() + " should be of type " + ex.getRequiredType().getName();
-
-        ApiError apiError =
-                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
         LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors());
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
@@ -92,7 +85,6 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     protected ResponseEntity<Object> handleNoHandlerFoundException(
             NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String error = "No handler found for " + ex.getHttpMethod() + " " + ex.getRequestURL();
-
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), error);
         LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors());
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
@@ -108,7 +100,6 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         builder.append(ex.getMethod());
         builder.append(" method is not supported for this request. Supported methods are ");
         ex.getSupportedHttpMethods().forEach(t -> builder.append(t + " "));
-
         ApiError apiError = new ApiError(HttpStatus.METHOD_NOT_ALLOWED,
                 ex.getLocalizedMessage(), builder.toString());
         LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors());
@@ -124,8 +115,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         StringBuilder builder = new StringBuilder();
         builder.append(ex.getContentType());
         builder.append(" media type is not supported. Supported media types are ");
-        ex.getSupportedMediaTypes().forEach(t -> builder.append(t + ", "));
-
+        ex.getSupportedMediaTypes().forEach(t -> builder.append(t).append(", "));
         ApiError apiError = new ApiError(HttpStatus.UNSUPPORTED_MEDIA_TYPE,
                 ex.getLocalizedMessage(), builder.substring(0, builder.length() - 2));
         LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors());
