@@ -204,10 +204,14 @@
                     title: bookTitle,
                     author: bookAuthor
                 }),
-                complete: function(data) {
-                    if(data.status === 200) {
+                success: function(data) {
                         location.reload();
-                    }
+                },
+                error: function (e) {
+                    console.log(e.responseJSON.errors);
+                    console.log(e.responseJSON.message);
+                    console.log(e.responseJSON.status);
+                    alert(e.responseJSON.errors);
                 }
             });
         }
