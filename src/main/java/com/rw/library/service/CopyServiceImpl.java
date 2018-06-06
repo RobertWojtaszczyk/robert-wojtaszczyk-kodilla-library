@@ -6,6 +6,8 @@ import com.rw.library.repository.CopyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
@@ -33,11 +35,18 @@ public class CopyServiceImpl implements CopyService {
     }
 
     @Override
+    public Page<Copy> findAllByBook_Id(Pageable pageable, Long bookId) {
+        return copyRepository.findAllByBook_Id(pageable, bookId);
+    }
+
+    @Override
+    public Optional<Copy> findById(Long copyId) {
+        return copyRepository.findById(copyId);
+    }
+
+    @Override
     public Copy getById(Long id) {
-        return Optional.ofNullable(copyRepository.findOne(id)).orElseGet(() -> {
-            LOGGER.warn("Copy by id=" + id + " not found. Method: Copy getById(Long id)");
-            return new Copy(); // null???
-        });
+        return copyRepository.findOne(id);
     }
 
     @Override
@@ -50,9 +59,14 @@ public class CopyServiceImpl implements CopyService {
 
     @Override
     public Copy update(Copy updatedCopy) {
-        Copy copy = copyRepository.findOne(updatedCopy.getId()); //nullPointerException if copy not exists
-        copy.setStatus(updatedCopy.getStatus()); // if not in Enum: org.springframework.http.converter.HttpMessageNotReadableException
-        return Optional.ofNullable(copyRepository.save(copy)).orElse(new Copy());
+        Copy copy = copyRepository.findOne(updatedCopy.getId());
+        if (updatedCopy.getStatus() != null) {
+            copy.setStatus(updatedCopy.getStatus());
+        }
+        if (updatedCopy.getBook() != null) {
+            copy.setBook(updatedCopy.getBook());
+        }
+        return copyRepository.save(copy);
     }
 
     @Override

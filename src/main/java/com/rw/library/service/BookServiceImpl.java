@@ -23,8 +23,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book findByAuthor(String author) {
-        return Optional.ofNullable(bookRepository.findByAuthor(author)).orElse(new Book());
+    public Optional<Book> findById(Long bookId) {
+        return bookRepository.findById(bookId);
     }
 
     @Override

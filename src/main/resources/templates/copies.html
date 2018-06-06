@@ -1,0 +1,287 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- CSS INCLUDE -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous"></link>
+    <!-- EOF CSS INCLUDE -->
+    <style>
+        .pagination-centered {
+            text-align: center;
+        }
+        .disabled {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+        .pointer-disabled {
+            pointer-events: none;
+        }
+        .copy_update_form {
+            display: none;
+        }
+        .copy_update_form_active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<!-- START PAGE CONTAINER -->
+<div class="container-fluid" id="copies-container" th:attr="bookId=${bookId}">
+    <!-- START PAGE SIDEBAR -->
+    <!-- commented out     <div th:replace="fragments/header :: header"> </div> -->
+    <!-- END PAGE SIDEBAR -->
+    <!-- PAGE TITLE -->
+    <div class="page-title">
+        <h2>
+            <span class="fa fa-arrow-circle-o-left"></span> Copies Repository
+        </h2>
+    </div>
+    <!-- END PAGE TITLE -->
+    <div class="row">
+        <table class="table datatable">
+            <thead>
+            <tr>
+                <th>Copy Id</th>
+                <th>Added To Collection</th>
+                <th>Last Updated</th>
+                <th>Status</th>
+                <th>Update Copy</th>
+                <th>Delete Copy</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="copieslist : ${copieslist}" id="copy-row">
+                <div class="top_row">
+                    <td th:text="${copieslist.id}">Text ...</td>
+                    <td th:text="${copieslist.dateCreated}">Text ...</td>
+                    <td th:text="${copieslist.lastUpdated}">Text ...</td>
+                    <td th:text="${copieslist.status}">Text ...</td>
+
+                    <td><button type="button"
+                                id="update-button"
+                                class="btn btn-primary btn-condensed"
+                                th:attr="copy-id=${copieslist.id}">
+                        <i class="glyphicon glyphicon-edit"></i>
+                    </button></td>
+                    <td><button type="button"
+                                id="delete-button"
+                                class="btn btn-primary btn-condensed"
+                                th:attr="copy-id=${copieslist.id}">
+                        <i class="glyphicon glyphicon-remove"></i>
+                    </button></td>
+                </div>
+            </tr>
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="form-group col-md-1">
+                <select class="form-control pagination" id="pageSizeSelect" th:attr="bookId=${bookId}">
+                    <option th:each="pageSize : ${pageSizes}" th:text="${pageSize}"
+                            th:value="${pageSize}"
+                            th:selected="${pageSize} == ${selectedPageSize}">
+                    </option>
+                </select>
+            </div>
+            <div th:if="${copieslist.totalPages != 1}"
+                 class="form-group col-md-11 pagination-centered">
+                <ul class="pagination">
+                    <li th:class="${copieslist.number == 0} ? disabled"><a
+                            class="pageLink"
+                            th:href="@{/copies(bookId=${bookId}, pageSize=${selectedPageSize}, page=1)}">«</a>
+                    </li>
+                    <li th:class="${copieslist.number == 0} ? disabled"><a
+                            class="pageLink"
+                            th:href="@{/copies(bookId=${bookId}, pageSize=${selectedPageSize}, page=${copieslist.number})}">←</a>
+                    </li>
+                    <li
+                            th:class="${copieslist.number == (page - 1)} ? 'active pointer-disabled'"
+                            th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+                        <a class="pageLink"
+                           th:href="@{/copies(bookId=${bookId}, pageSize=${selectedPageSize}, page=${page})}"
+                           th:text="${page}"></a>
+                    </li>
+                    <li
+                            th:class="${copieslist.number + 1 == copieslist.totalPages} ? disabled">
+                        <a class="pageLink"
+                           th:href="@{/copies(bookId=${bookId}, pageSize=${selectedPageSize}, page=${copieslist.number + 2})}">→</a>
+                    </li>
+                    <li
+                            th:class="${copieslist.number + 1 == copieslist.totalPages} ? disabled">
+                        <a class="pageLink"
+                           th:href="@{/copies(bookId=${bookId}, pageSize=${selectedPageSize}, page=${copieslist.totalPages})}">»</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- END PAGE CONTENT -->
+    <!-- END PAGE CONTAINER -->
+    <div>
+        <!--Add Book Form-->
+        <form
+                class="add_copy_form"
+                method="POST"
+                action="http://localhost:8080/v1/library/createCopy2"
+                id="copy-add-form"
+                th:attr="bookId=${bookId}">
+            <fieldset>
+                <div class="form-group">
+                    <label for="sel1">Select Status:</label>
+                    <select class="form-control-aaa" id="sel1" name="status">
+                        <option>OK</option>
+                        <option>DAMAGED</option>
+                        <option>LOST</option>
+                    </select>
+                <button type="submit" name="copy-add-button" class="add__button btn btn-primary btn-condensed">Add a Copy <i class="glyphicon glyphicon-ok"></i></button>
+                </div>
+            </fieldset>
+        </form>
+
+    </div>
+
+    <div>
+        <br/>
+        <!--Add Update Form-->
+        <form
+                class="copy_update_form"
+                method="PUT"
+                action="http://localhost:8080/v1/library/updateBook2"
+                id="copy-update-form">
+            <fieldset>
+                <div class="form-group">
+                    <label for="sel1">Select Status:</label>
+                    <select class="form-control-aaa" id="sel2" name="status">
+                        <option>OK</option>
+                        <option>DAMAGED</option>
+                        <option>LOST</option>
+                    </select>
+                <button type="submit" name="update-book-button" class="update__button btn btn-primary btn-condensed">Update a book <i class="glyphicon glyphicon-ok"></i></button>
+                </div>
+            </fieldset>
+        </form>
+
+    </div>
+
+</div>
+<script
+        src="https://code.jquery.com/jquery-1.11.1.min.js"
+        integrity="sha256-VAvG3sHdS5LqTT+5A/aeq/bZGa/Uj04xKxY8KM/w9EE="
+        crossorigin="anonymous"></script>
+<script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        const $copiesContainer = $('#copies-container');
+        changePageAndSize();
+
+        function handleCopySubmitRequest(event) {
+            event.preventDefault();
+
+            var bookId = $(this).attr("bookId");
+            var copyStatus = $(this).find('[name="status"]').val();
+
+            var requestUrl = "http://localhost:8080/v1/library/createCopy";
+
+            $.ajax({
+                url: requestUrl,
+                method: 'POST',
+                processData: false,
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                data: JSON.stringify({
+                    status: copyStatus,
+                    bookId: bookId
+                }),
+                success: function(data) {
+                    location.reload();
+                },
+                error: function (e) {
+                    console.log(e.responseJSON.errors);
+                    console.log(e.responseJSON.message);
+                    console.log(e.responseJSON.status);
+                    alert(e.responseJSON.errors);
+                }
+            });
+        }
+
+        function handleCopyUpdateSubmitRequest(event) {
+            event.preventDefault();
+
+            var copyId = $(this).attr("copy-id");
+            var copyStatus = $(this).find('[name="status"]').val();
+
+            var requestUrl = "http://localhost:8080/v1/library/updateCopy";
+
+            $.ajax({
+                url: requestUrl,
+                method: 'PUT',
+                processData: false,
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                data: JSON.stringify({
+                    id: copyId,
+                    status: copyStatus
+                }),
+                success: function(data) {
+                    location.reload();
+                },
+                error: function (e) {
+                    console.log(e.responseJSON.errors);
+                    console.log(e.responseJSON.message);
+                    console.log(e.responseJSON.status);
+                    alert(e.responseJSON.errors);
+                }
+            });
+        }
+
+        function handleDeleteCopy() {
+            var parentEl = $(this).parents('#copy-row');
+            var copyId = $(this).attr("copy-id");
+            var requestUrl = "http://localhost:8080/v1/library/deleteCopy";
+
+            $.ajax({
+                url: requestUrl + '/?' + $.param({
+                    copyId: copyId
+                }),
+                method: 'DELETE',
+                success: function() {
+                    parentEl.slideUp(400, function() { parentEl.remove(); });
+                },
+                error: function (e) {
+                    console.log(e.responseJSON.errors);
+                    console.log(e.responseJSON.message);
+                    console.log(e.responseJSON.status);
+                    parentEl.remove();
+                    alert(e.responseJSON.message);
+                }
+            })
+        }
+
+        function handleUpdateCopyButton() {
+            var copyId = $(this).attr("copy-id");
+            $('#copy-update-form').attr('copy-id', copyId).toggleClass('copy_update_form_active');
+        }
+
+        $('#copy-add-form').on('submit', handleCopySubmitRequest);
+        $('#copy-update-form').on('submit', handleCopyUpdateSubmitRequest);
+        $copiesContainer.on('click','#delete-button', handleDeleteCopy);
+        $copiesContainer.on('click','#update-button', handleUpdateCopyButton);
+    });
+    function changePageAndSize() {
+
+        $('#pageSizeSelect').change(function(evt) {
+            window.location.replace("/copies?bookId=" + $(this).attr("bookId") + "&pageSize=" + this.value + "&page=1");
+        });
+    }
+
+
+
+    /*]]>*/
+</script>
+</body>
+</html>

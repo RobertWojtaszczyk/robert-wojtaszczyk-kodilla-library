@@ -1,10 +1,12 @@
-package com.rw.library.exceptions;
+package com.rw.library.errors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -39,7 +41,43 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
             errors.add(violation.getRootBeanClass().getName() + " " +
                     violation.getPropertyPath() + ": " + violation.getMessage());
         }
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
+        ApiError apiError = new ApiError(HttpStatus.LENGTH_REQUIRED, ex.getLocalizedMessage(), errors);
+        LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors());
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @ExceptionHandler({ EmptyResultDataAccessException.class })
+    public ResponseEntity<Object> handleEmptyResultDataAccess(
+            EmptyResultDataAccessException ex, WebRequest request) {
+        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), "");
+        LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors());
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @ExceptionHandler({ DomainObjectNotFoundException.class })
+    public ResponseEntity<Object> handleBookNotFound(
+            DomainObjectNotFoundException ex, WebRequest request) {
+        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), "Book not found");
+        LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors());
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @ExceptionHandler({ EntityConstraintViolationException.class })
+    public ResponseEntity<Object> handleEntityConstraintViolation(
+            EntityConstraintViolationException ex, WebRequest request) {
+        ApiError apiError = new ApiError(HttpStatus.LENGTH_REQUIRED, ex.getLocalizedMessage(), "Improper parameter length");
+        LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors());
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException ex,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
+        ApiError apiError = new ApiError(
+                HttpStatus.BAD_REQUEST, "JSON parse error", ex.getMostSpecificCause().getMessage());
         LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors());
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
@@ -99,7 +137,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         StringBuilder builder = new StringBuilder();
         builder.append(ex.getMethod());
         builder.append(" method is not supported for this request. Supported methods are ");
-        ex.getSupportedHttpMethods().forEach(t -> builder.append(t + " "));
+        ex.getSupportedHttpMethods().forEach(t -> builder.append(t).append(" "));
         ApiError apiError = new ApiError(HttpStatus.METHOD_NOT_ALLOWED,
                 ex.getLocalizedMessage(), builder.toString());
         LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors());
@@ -126,7 +164,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "error occurred");
-        LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors());
+        LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors() + "; " + ex.fillInStackTrace());
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 }

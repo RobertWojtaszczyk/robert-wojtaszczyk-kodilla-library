@@ -17,16 +17,16 @@ public class Reader extends AbstractDomainClass {
     public Reader() {
     }
 
-    public Reader(Long id, LocalDateTime dateCreated, String name, String surname) {
+    public Reader(Long id, LocalDateTime dateCreated, String name, String lastname) {
         super(id, dateCreated);
-        this.name = name;
-        this.surname = surname;
+        this.firstname = name;
+        this.lastname = lastname;
     }
 
     @Size(min = 3, max = 255, message = "Please enter firstname, between {min} and {max} characters.")
-    private String name;
+    private String firstname;
     @Size(min = 3, max = 255, message = "Please enter lastname, between {min} and {max} characters.")
-    private String surname;
+    private String lastname;
     @OneToMany(
             targetEntity = Borrow.class,
             mappedBy = "reader",
@@ -34,20 +34,20 @@ public class Reader extends AbstractDomainClass {
     )
     private List<Borrow> borrows = new LinkedList<>();
 
-    public String getName() {
-        return name;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     public List<Borrow> getBorrows() {
@@ -62,8 +62,8 @@ public class Reader extends AbstractDomainClass {
     public String toString() {
         return "Reader{" +
                 "id=" + getId() +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
+                ", name='" + firstname + '\'' +
+                ", surname='" + lastname + '\'' +
                 '}';
     }
 
@@ -73,12 +73,12 @@ public class Reader extends AbstractDomainClass {
         if (!(o instanceof Reader)) return false;
         Reader reader = (Reader) o;
         return Objects.equals(getId(), reader.getId()) &&
-                Objects.equals(getName(), reader.getName()) &&
-                Objects.equals(getSurname(), reader.getSurname());
+                Objects.equals(getFirstname(), reader.getFirstname()) &&
+                Objects.equals(getLastname(), reader.getLastname());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getSurname());
+        return Objects.hash(getLastname());
     }
 }

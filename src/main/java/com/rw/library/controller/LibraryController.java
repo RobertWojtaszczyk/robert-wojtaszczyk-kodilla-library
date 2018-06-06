@@ -6,7 +6,7 @@ import com.rw.library.service.BookService;
 import com.rw.library.service.BorrowService;
 import com.rw.library.service.CopyService;
 import com.rw.library.service.ReaderService;
-import com.rw.library.validator.BookValidator;
+import com.rw.library.validator.DomainObjectValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @CrossOrigin(origins = "*")
@@ -28,16 +27,16 @@ public class LibraryController {
     private final ReaderService readerService;
     private final BorrowService borrowService;
     private final DomainMapper domainMapper;
-    private final BookValidator bookValidator;
+    private final DomainObjectValidator domainObjectValidator;
 
     @Autowired
-    public LibraryController(final BookService bookService, final CopyService copyService, final ReaderService readerService, final BorrowService borrowService, final DomainMapper domainMapper, final BookValidator bookValidator) {
+    public LibraryController(final BookService bookService, final CopyService copyService, final ReaderService readerService, final BorrowService borrowService, final DomainMapper domainMapper, final DomainObjectValidator domainObjectValidator) {
         this.bookService = bookService;
         this.copyService = copyService;
         this.readerService = readerService;
         this.borrowService = borrowService;
         this.domainMapper = domainMapper;
-        this.bookValidator = bookValidator;
+        this.domainObjectValidator = domainObjectValidator;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getAvailableCopies")
@@ -70,14 +69,6 @@ public class LibraryController {
         return domainMapper.mapToReadersDtoList(readerService.listAll());
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/getCopy")
-    public CopyDto getCopy(@RequestParam Long copy_id) {
-        return Optional.ofNullable(domainMapper.mapToCopyDto(copyService.getById(copy_id)))
-                .orElseGet(() -> {
-                    LOGGER.warn("Copy by id=" + copy_id + " not found!");
-                    return new CopyDto();});
-    }
-
     @RequestMapping(method = RequestMethod.GET, value = "/getBorrows")
     public List<BorrowDto> getBorrows() {
         return domainMapper.mapToBorrowsDtoList(borrowService.listAll());
@@ -105,6 +96,7 @@ public class LibraryController {
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateBook", consumes = MediaType.APPLICATION_JSON_VALUE)
     public BookDto updateBook(@RequestBody BookDto bookDto) {
+        domainObjectValidator.validateBook(bookDto);
         return domainMapper.mapToBookDto(bookService.update(domainMapper.mapToBook(bookDto)));
     }
 
@@ -115,13 +107,19 @@ public class LibraryController {
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateCopy", consumes = MediaType.APPLICATION_JSON_VALUE)
     public CopyDto updateCopy(@RequestBody CopyDto copyDto) {
+        domainObjectValidator.validateCopyId(copyDto.getId());
         return domainMapper.mapToCopyDto(copyService.update(domainMapper.mapToCopy(copyDto)));
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/deleteBook")
     public void deleteBook(@RequestParam Long bookId) {
-        if (bookValidator.validateId(bookId)) {
-            bookService.delete(bookId);
-        }
+        domainObjectValidator.validateBookId(bookId);
+        bookService.delete(bookId);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/deleteCopy")
+    public void deleteCopy(@RequestParam Long copyId) {
+        domainObjectValidator.validateCopyId(copyId);
+        copyService.delete(copyId);
     }
 }

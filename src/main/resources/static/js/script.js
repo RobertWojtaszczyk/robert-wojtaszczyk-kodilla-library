@@ -137,8 +137,8 @@ $(document).ready(function() {
             rowId: 'id',
             columns: [
                 {data : "id"},
-                {data : "name"},
-                {data : "surname"},
+                {data : "firstname"},
+                {data : "lastname"},
                 {data : "totalBorrowedBooks"},
                 {data : "currentlyBorrowedBooks"},
                 {

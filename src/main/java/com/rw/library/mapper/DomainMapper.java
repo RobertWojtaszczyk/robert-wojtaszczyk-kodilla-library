@@ -5,8 +5,10 @@ import com.rw.library.service.BookService;
 import com.rw.library.service.BorrowService;
 import com.rw.library.service.CopyService;
 import com.rw.library.service.ReaderService;
-import com.rw.library.validator.BookValidator;
+import com.rw.library.validator.DomainObjectValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -20,23 +22,23 @@ public class DomainMapper {
     private final CopyService copyService;
     private final ReaderService readerService;
     private final BorrowService borrowService;
-    private final BookValidator bookValidator;
+    private final DomainObjectValidator domainObjectValidator;
 
     @Autowired
-    public DomainMapper(final BookService bookService, final CopyService copyService, final ReaderService readerService, final BorrowService borrowService, final BookValidator bookValidator) {
+    public DomainMapper(final BookService bookService, final CopyService copyService, final ReaderService readerService, final BorrowService borrowService, final DomainObjectValidator domainObjectValidator) {
         this.bookService = bookService;
         this.copyService = copyService;
         this.readerService = readerService;
         this.borrowService = borrowService;
-        this.bookValidator = bookValidator;
+        this.domainObjectValidator = domainObjectValidator;
     }
 
     public Reader mapToReader(final ReaderDto readerDto) {
         return new Reader(
                 readerDto.getId(),
                 null,
-                readerDto.getName(),
-                readerDto.getSurname()
+                readerDto.getFirstname(),
+                readerDto.getLastname()
         );
     }
 
@@ -45,8 +47,8 @@ public class DomainMapper {
                 reader.getId(),
                 reader.getDateCreated().toString(),
                 reader.getLastUpdated().toString(),
-                reader.getName(),
-                reader.getSurname(),
+                reader.getFirstname(),
+                reader.getLastname(),
                 reader.getBorrows().size(),
                 borrowService.getBorrowedBooks(reader).size());
     }
@@ -94,12 +96,11 @@ public class DomainMapper {
     }
 
     public Book mapToBook(final BookDto bookDto) {
-        BookDto validatedBookDto = bookValidator.validateBook(bookDto);
         return new Book(
-                validatedBookDto.getId(),
+                bookDto.getId(),
                 null,
-                validatedBookDto.getTitle(),
-                validatedBookDto.getAuthor()
+                bookDto.getTitle(),
+                bookDto.getAuthor()
         );
     }
 
@@ -122,23 +123,25 @@ public class DomainMapper {
                 .collect(Collectors.toList());
     }
 
+    public Page<BookDto> mapToBookDtoPage(final Page<Book> books) {
+        return books.map(this::mapToBookDto);
+    }
+
     public Copy mapToCopy(final CopyDto copyDto) {
+        Book book = bookService.getById(copyDto.getBookId());
         return new Copy(
                 copyDto.getId(),
                 null,
                 copyDto.getStatus(),
-                bookService.getById(copyDto.getBookId())
+                book
         );
     }
 
     public CopyDto mapToCopyDto(final Copy copy) {
-        if (copy.getId() == null) { // ?????
-            return new CopyDto();
-        }
         return new CopyDto(
                 copy.getId(),
-                copy.getDateCreated().toString(),
-                copy.getLastUpdated().toString(),
+                copy.getDateCreated().toLocalDate().toString(),
+                copy.getLastUpdated().toLocalDate().toString(),
                 copy.getStatus(),
                 copy.getBook().getId()
         );
@@ -149,6 +152,15 @@ public class DomainMapper {
                 .map(o -> (Copy)o)
                 .map(this::mapToCopyDto)
                 .collect(Collectors.toList());
+    }
+
+    public Page<CopyDto> mapToCopyDtoPage(final Page<Copy> copies) {
+        return copies.map(new Converter<Copy, CopyDto>() {
+            @Override
+            public CopyDto convert(Copy source) {
+                return mapToCopyDto(source);
+            }
+        });
     }
 
     public BorrowedDto mapToBorrowed(final Borrow borrow) {

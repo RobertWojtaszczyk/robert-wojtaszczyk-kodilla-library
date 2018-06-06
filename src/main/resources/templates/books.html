@@ -35,7 +35,7 @@
     <!-- PAGE TITLE -->
     <div class="page-title">
         <h2>
-            <span class="fa fa-arrow-circle-o-left"></span> Books Interface
+            <span class="fa fa-arrow-circle-o-left"></span> Books Repository
         </h2>
     </div>
     <!-- END PAGE TITLE -->
@@ -43,20 +43,32 @@
         <table class="table datatable">
             <thead>
             <tr>
-                <th>Title</th>
-                <th>Author</th>
+                <th><a class="pageLink"
+                       th:href="@{/books(pageSize=${selectedPageSize}, page=1, sortBy=${sortingFields[0]})}"
+                       th:text="Title"></a>
+                </th>
+                <th><a class="pageLink"
+                       th:href="@{/books(pageSize=${selectedPageSize}, page=1, sortBy=${sortingFields[1]})}"
+                       th:text="Author"></a>
+                </th>
+                <!--<th>Number Of Copies</th>-->
+                <th>Number of Copies</th>
                 <th>Show Copies</th>
                 <th>Update Book</th>
                 <th>Delete Book</th>
+                <!--<th>Update form</th>-->
             </tr>
             </thead>
             <tbody>
             <tr th:each="bookslist : ${bookslist}" id="book-row">
-                <td th:text="${bookslist.title}">Text ...</td>
-                <td th:text="${bookslist.author}">Text ...</td>
+                <div class="top_row">
+                <td th:text="${bookslist.title}"></td>
+                <td th:text="${bookslist.author}"></td>
+                <td th:text="${bookslist.totalCopiesInLibrary}"></td>
                 <td><button type="button"
-                            class="btn btn-primary btn-condensed">
-                    <i class="glyphicon glyphicon-list"></i>
+                            id="copies-button"
+                            class="btn btn-primary btn-condensed"
+                            th:attr="book-id=${bookslist.id}"><i class="glyphicon glyphicon-list"></i>
                 </button></td>
                 <td><button type="button"
                             id="update-button"
@@ -70,15 +82,17 @@
                             th:attr="book-id=${bookslist.id}">
                     <i class="glyphicon glyphicon-remove"></i>
                 </button></td>
+                </div>
             </tr>
             </tbody>
         </table>
         <div class="row">
             <div class="form-group col-md-1">
-                <select class="form-control pagination" id="pageSizeSelect">
+                <select class="form-control pagination" id="pageSizeSelect" th:attr="sortingField=${selectedSortingField}">
                     <option th:each="pageSize : ${pageSizes}" th:text="${pageSize}"
                             th:value="${pageSize}"
-                            th:selected="${pageSize} == ${selectedPageSize}"></option>
+                            th:selected="${pageSize} == ${selectedPageSize}">
+                    </option>
                 </select>
             </div>
             <div th:if="${bookslist.totalPages != 1}"
@@ -86,28 +100,28 @@
                 <ul class="pagination">
                     <li th:class="${bookslist.number == 0} ? disabled"><a
                             class="pageLink"
-                            th:href="@{/books(pageSize=${selectedPageSize}, page=1)}">«</a>
+                            th:href="@{/books(pageSize=${selectedPageSize}, page=1, sortBy=${selectedSortingField})}">«</a>
                     </li>
                     <li th:class="${bookslist.number == 0} ? disabled"><a
                             class="pageLink"
-                            th:href="@{/books(pageSize=${selectedPageSize}, page=${bookslist.number})}">←</a>
+                            th:href="@{/books(pageSize=${selectedPageSize}, page=${bookslist.number}, sortBy=${selectedSortingField})}">←</a>
                     </li>
                     <li
                             th:class="${bookslist.number == (page - 1)} ? 'active pointer-disabled'"
                             th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
                         <a class="pageLink"
-                           th:href="@{/books(pageSize=${selectedPageSize}, page=${page})}"
+                           th:href="@{/books(pageSize=${selectedPageSize}, page=${page}, sortBy=${selectedSortingField})}"
                            th:text="${page}"></a>
                     </li>
                     <li
                             th:class="${bookslist.number + 1 == bookslist.totalPages} ? disabled">
                         <a class="pageLink"
-                           th:href="@{/books(pageSize=${selectedPageSize}, page=${bookslist.number + 2})}">→</a>
+                           th:href="@{/books(pageSize=${selectedPageSize}, page=${bookslist.number + 2}, sortBy=${selectedSortingField})}">→</a>
                     </li>
                     <li
                             th:class="${bookslist.number + 1 == bookslist.totalPages} ? disabled">
                         <a class="pageLink"
-                           th:href="@{/books(pageSize=${selectedPageSize}, page=${bookslist.totalPages})}">»</a>
+                           th:href="@{/books(pageSize=${selectedPageSize}, page=${bookslist.totalPages}, sortBy=${selectedSortingField})}">»</a>
                     </li>
                 </ul>
             </div>
@@ -127,23 +141,22 @@
                     Book title
                 </label>
                 <input type="text" name="title" placeholder="Insert new book title"/>
-            </fieldset>
-
-            <fieldset>
+            <!--</fieldset>
+            <fieldset>-->
                 <label>
                     Book author
                 </label>
-                <input type="text" name="author" placeholder="Insert new book author"/>
-            </fieldset>
-
-            <fieldset>
-                <button type="submit" name="book-add-button" class="add__button">Add a book</button>
+                <input type="text" name="author" placeholder="Insert new book author" class="text_field"/>
+            <!--</fieldset>
+            <fieldset>-->
+                <button type="submit" name="book-add-button" class="add__button btn btn-primary btn-condensed">Add a book <i class="glyphicon glyphicon-ok"></i></button>
             </fieldset>
         </form>
 
     </div>
 
     <div>
+        <br/>
         <!--Add Update Form-->
         <form
                 class="book_update_form"
@@ -155,17 +168,15 @@
                     Book title
                 </label>
                 <input type="text" name="title" placeholder="Insert book new title"/>
-            </fieldset>
-
-            <fieldset>
+            <!--</fieldset>
+            <fieldset>-->
                 <label>
                     Book author
                 </label>
                 <input type="text" name="author" placeholder="Insert book new author"/>
-            </fieldset>
-
-            <fieldset>
-                <button type="submit" name="update-book-button" class="update__button">Update a book</button>
+            <!--</fieldset>
+            <fieldset>-->
+                <button type="submit" name="update-book-button" class="update__button btn btn-primary btn-condensed">Update a book <i class="glyphicon glyphicon-ok"></i></button>
             </fieldset>
         </form>
 
@@ -236,10 +247,14 @@
                     title: bookTitle,
                     author: bookAuthor
                 }),
-                complete: function(data) {
-                    if(data.status === 200) {
+                success: function(data) {
                         location.reload();
-                    }
+                },
+                error: function (e) {
+                    console.log(e.responseJSON.errors);
+                    console.log(e.responseJSON.message);
+                    console.log(e.responseJSON.status);
+                    alert(e.responseJSON.errors);
                 }
             });
         }
@@ -256,6 +271,13 @@
                 method: 'DELETE',
                 success: function() {
                     parentEl.slideUp(400, function() { parentEl.remove(); });
+                },
+                error: function (e) {
+                    console.log(e.responseJSON.errors);
+                    console.log(e.responseJSON.message);
+                    console.log(e.responseJSON.status);
+                    parentEl.remove();
+                    alert(e.responseJSON.message);
                 }
             })
         }
@@ -265,14 +287,20 @@
             $('#book-update-form').attr('book-id', bookId).toggleClass('book_update_form_active');
         }
 
+        function handleShowCopiesButton() {
+            var bookId = $(this).attr("book-id");
+            window.location.href='http://localhost:8080/copies?bookId=' + bookId;
+        }
+
         $('#book-add-form').on('submit', handleBookSubmitRequest);
         $('#book-update-form').on('submit', handleBookUpdateSubmitRequest);
         $booksContainer.on('click','#delete-button', handleDeleteBook);
         $booksContainer.on('click','#update-button', handleUpdateBookButton);
+        $booksContainer.on('click','#copies-button', handleShowCopiesButton);
     });
     function changePageAndSize() {
         $('#pageSizeSelect').change(function(evt) {
-            window.location.replace("/books?pageSize=" + this.value + "&page=1");
+            window.location.replace("/books?pageSize=" + this.value + "&page=1" + "&sortBy=" + $(this).attr("sortingField"));
         });
     }
 

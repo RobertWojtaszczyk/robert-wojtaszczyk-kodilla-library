@@ -37,6 +37,7 @@ public class CoreConfiguration implements WebMvcConfigurer {
         registry.addResourceHandler("/lib/**").addResourceLocations("/lib/").setCachePeriod(0);
         registry.addResourceHandler("/images/**").addResourceLocations("/images/").setCachePeriod(0);
         registry.addResourceHandler("/css/**").addResourceLocations("/css/","classpath:/static/css/").setCachePeriod(0);
+        registry.addResourceHandler("/js/**").addResourceLocations("classpath:/static/js/").setCachePeriod(0);
         registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
     }

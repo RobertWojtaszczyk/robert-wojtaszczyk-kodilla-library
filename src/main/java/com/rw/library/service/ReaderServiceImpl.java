@@ -21,11 +21,6 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     @Override
-    public Reader findBySurname(String surname) {
-        return Optional.ofNullable(readerRepository.findBySurname(surname)).orElse(new Reader());
-    }
-
-    @Override
     public List<Reader> listAll() {
         List<Reader> readers = new ArrayList<>();
         readerRepository.findAll().forEach(readers::add);
@@ -45,11 +40,11 @@ public class ReaderServiceImpl implements ReaderService {
     @Override
     public Reader update(Reader updatedReader) {
         Reader reader = readerRepository.findOne(updatedReader.getId()); //nullPointerException if reader not exists
-        if (!updatedReader.getName().equals(reader.getName())) {
-            reader.setName(Optional.ofNullable(updatedReader.getName()).orElse(reader.getName()));
+        if (!updatedReader.getFirstname().equals(reader.getFirstname())) {
+            reader.setFirstname(Optional.ofNullable(updatedReader.getFirstname()).orElse(reader.getFirstname()));
         }
-        if (!updatedReader.getSurname().equals(reader.getSurname())) {
-            reader.setSurname(Optional.ofNullable(updatedReader.getSurname()).orElse(reader.getSurname()));
+        if (!updatedReader.getLastname().equals(reader.getLastname())) {
+            reader.setLastname(Optional.ofNullable(updatedReader.getLastname()).orElse(reader.getLastname()));
         }
         return Optional.ofNullable(readerRepository.save(reader)).orElse(new Reader());
     }

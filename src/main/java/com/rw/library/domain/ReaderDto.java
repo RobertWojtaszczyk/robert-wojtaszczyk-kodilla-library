@@ -11,8 +11,8 @@ public class ReaderDto {
     private Long id;
     private String dateCreated;
     private String lastUpdated;
-    private String name;
-    private String surname;
+    private String firstname;
+    private String lastname;
     private int totalBorrowedBooks;
     private int currentlyBorrowedBooks;
 }
