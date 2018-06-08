@@ -9,7 +9,7 @@ $(document).ready(function() {
     var borrowedTable;
 
     generateReaders();
-    generateBooks();
+    // generateBooks();
 
 
     function returnBook(urlReturnBook, urlBorrowed) {
@@ -19,6 +19,26 @@ $(document).ready(function() {
             success: function() {
                 generateBorrowed(urlBorrowed);
                 generateReaders();
+            }
+        })
+    }
+
+    function borrowBook(readerId, copyId, bookId) {
+        $.ajax({
+            url: "http://localhost:8080//v1/library/createBorrow",
+            method: 'POST',
+            processData: false,
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            data: JSON.stringify({
+                reader_id: readerId,
+                copy_id: copyId
+            }),
+            success: function() {
+                generateReaders();
+                generateBooks(readerId);
+                generateAvCopies('http://localhost:8080/v1/library/getAvailableCopies?book_id=' + bookId, readerId);
+                generateBorrowed('http://localhost:8080/v1/library/getBorrowedBooks?reader_id=' + readerId);
             }
         })
     }
@@ -59,8 +79,8 @@ $(document).ready(function() {
         } );
     }
 
-    function generateAvCopies(urlAvCopies) {
-        avCopiesTable = $("#datatable_copies_row").DataTable({
+    function generateAvCopies(urlAvCopies, readerId) {
+        var avCopiesTable = $("#datatable_copies_row").DataTable({
             destroy: true,
             ajax: {
                 url: urlAvCopies,
@@ -80,15 +100,13 @@ $(document).ready(function() {
                 }
             ]
         });
-        /*$("#datatable_borrowed_row tbody").on( 'click', 'button', function () {
-            var data = borrowedTable.row($(this).parents('tr')).data();
-            var urlReturnBook = 'http://localhost:8080/v1/library/returnBook?borrow_id='+data.id;
-            var urlBorrowed = 'http://localhost:8080/v1/library/getBooksToReturnByReader?reader_id='+data.readerId;
-            returnBook(urlReturnBook, urlBorrowed);
-        } );*/
+        $("#datatable_copies_row tbody").on( 'click', 'button', function () {
+            var data = avCopiesTable.row($(this).parents('tr')).data();
+            borrowBook(readerId, data.id, data.bookId);
+        });
     }
 
-    function generateBooks() {
+    function generateBooks(readerId) {
         const requestUrl = apiRoot + 'getBooks';
         var booksTable = $("#datatable_books_row").DataTable( {
             // retrieve: true,
@@ -118,7 +136,7 @@ $(document).ready(function() {
         $("#datatable_books_row tbody").on( 'click', 'button', function () {
             var data = booksTable.row($(this).parents('tr')).data();
             var urlAvCopies = 'http://localhost:8080/v1/library/getAvailableCopies?book_id='+data.id;
-            generateAvCopies(urlAvCopies);
+            generateAvCopies(urlAvCopies, readerId);
         } );
     }
 
@@ -140,21 +158,32 @@ $(document).ready(function() {
                 {data : "firstname"},
                 {data : "lastname"},
                 {data : "totalBorrowedBooks"},
-                {data : "currentlyBorrowedBooks"},
+                {data : "currentlyBorrowedBooks"},{
+                    targets: -1,
+                    data: null,
+                    defaultContent: "<button id='btn1'> Books </button>"
+                },
                 {
                     targets: -1,
                     data: null,
-                    defaultContent: "<button>Show</button>"
+                    defaultContent: "<button id='btn2'> Borrows </button>"
                 }
             ]
             });
 
-        $("#datatable_readers_row tbody").on( 'click', 'button', function () {
+        $("#datatable_readers_row tbody").on( 'click', '#btn2', function () {
             var data = readersTable.row($(this).parents('tr')).data();
             // var id = readersTable.row($(this).parents('tr')).id();
             var urlBorrowed = 'http://localhost:8080/v1/library/getBorrowedBooks?reader_id='+data.id;
             // alert("Requesting borrowed books data from: " + url);
             generateBorrowed(urlBorrowed);
+        } );
+
+        $("#datatable_readers_row tbody").on( 'click', '#btn1', function () {
+            var data = readersTable.row($(this).parents('tr')).data();
+            // var id = readersTable.row($(this).parents('tr')).id();
+            generateBooks(data.id);
+            // alert("Requesting borrowed books data from: " + url);
         } );
 
 

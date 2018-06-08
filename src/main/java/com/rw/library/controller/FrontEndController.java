@@ -1,8 +1,6 @@
 package com.rw.library.controller;
 
-import com.rw.library.domain.Book;
 import com.rw.library.domain.BookDto;
-import com.rw.library.domain.Copy;
 import com.rw.library.domain.CopyDto;
 import com.rw.library.domain.Paging.Pager;
 import com.rw.library.mapper.DomainMapper;
@@ -57,7 +55,7 @@ public class FrontEndController {
         ModelAndView modelAndView = new ModelAndView("books");
         int evalPage = (page < 1) ? INITIAL_PAGE : page - 1;
 
-        Page<BookDto> booksList = domainMapper.mapToBookDtoPage(bookService.listAllPageable(new PageRequest(evalPage, pageSize, Sort.Direction.ASC, sortBy)));
+        Page<BookDto> booksList = domainMapper.mapToBookDtoPage(bookService.findAll(new PageRequest(evalPage, pageSize, Sort.Direction.ASC, sortBy)));
         Pager pager = new Pager(booksList.getTotalPages(),booksList.getNumber(),BUTTONS_TO_SHOW);
         modelAndView.addObject("bookslist", booksList);
         modelAndView.addObject("selectedPageSize", pageSize);
@@ -75,13 +73,14 @@ public class FrontEndController {
         ModelAndView modelAndView = new ModelAndView("copies");
         int evalPage = (page < 1) ? INITIAL_PAGE : page - 1;
 
-        Page<CopyDto> copiesList = domainMapper.mapToCopyDtoPage(copyService.findAllByBook_Id(new PageRequest(evalPage, pageSize, Sort.Direction.ASC, "id"), bookId));
+        Page<CopyDto> copiesList = domainMapper.mapToCopyDtoPage(copyService.findAllByBookId(new PageRequest(evalPage, pageSize, Sort.Direction.ASC, "id"), bookId));
         Pager pager = new Pager(copiesList.getTotalPages(),copiesList.getNumber(),BUTTONS_TO_SHOW);
+        BookDto book = domainMapper.mapToBookDto(bookService.findOne(bookId));//.orElseThrow(() -> new DomainObjectNotFoundException("Book", bookId)));
         modelAndView.addObject("copieslist", copiesList);
         modelAndView.addObject("selectedPageSize", pageSize);
         modelAndView.addObject("pageSizes", PAGE_SIZES);
         modelAndView.addObject("pager", pager);
-        modelAndView.addObject("bookId", bookId);
+        modelAndView.addObject("book", book);
         return modelAndView;
     }
 }

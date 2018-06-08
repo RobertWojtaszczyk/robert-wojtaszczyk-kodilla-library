@@ -4,12 +4,15 @@ import com.rw.library.domain.Book;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface BookService extends CRUDService<Book> {
-    Optional<Book> findById(Long bookId);
+
+    Book findOne(Long id);
+    List<Book> findAll();
+    Page<Book> findAll(Pageable pageable);
+    Book save(Book book);
     Book update(Book book);
-    Page<Book> listAllPageable(Pageable pageable);
-    boolean isValidId(final Long id);
-    public void delete(Long id);
+    void delete(Long id);
+    boolean exists(Long id);
 }

@@ -5,13 +5,14 @@ import com.rw.library.domain.Copy;
 import com.rw.library.domain.Reader;
 import com.rw.library.repository.BorrowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Transactional
 @Service
@@ -24,46 +25,60 @@ public class BorrowServiceImpl implements BorrowService {
     }
 
     @Override
-    public List<Borrow> listAll() {
+    public Borrow findOne(final Long id) {
+        return borrowRepository.findOne(id);
+    }
+
+    @Override
+    public List<Borrow> findAll() {
         List<Borrow> borrows = new ArrayList<>();
         borrowRepository.findAll().forEach(borrows::add);
         return borrows;
     }
 
     @Override
-    public Borrow getById(Long id) {
-        return Optional.ofNullable(borrowRepository.findOne(id)).orElse(new Borrow());
+    public Page<Borrow> findAll(final Pageable pageable) {
+        return borrowRepository.findAll(pageable);
     }
 
     @Override
-    public Borrow saveOrUpdate(Borrow borrow) {
-        return Optional.ofNullable(borrowRepository.save(borrow)).orElse(new Borrow());
+    public Borrow save(final Borrow borrow) {
+        return borrowRepository.save(borrow);
     }
 
     @Override
-    public void delete(Long id) {
+    public Borrow update(final Borrow updatedBorrow) {
+        Borrow borrow = findOne(updatedBorrow.getId());
+        borrow.setCopy(updatedBorrow.getCopy());
+        borrow.setReader(updatedBorrow.getReader());
+        return save(borrow);
+    }
+
+    @Override
+    public void delete(final Long id) {
         borrowRepository.delete(id);
     }
 
-    public void returnBook(Long borrowId) {
-        Borrow borrow = borrowRepository.findOne(borrowId);
-        if (borrow.getReturnDate() == null) {
-            borrow.setReturnDate(LocalDate.now());
-            borrowRepository.save(borrow);
-        }
+    @Override
+    public boolean exists(final Long id) {
+        return borrowRepository.exists(id);
     }
 
     @Override
-    public List<Borrow> findAllByCopyAndReturnDateIsNull(Copy copy) {
+    public List<Borrow> findAllByCopyAndReturnDateIsNull(final Copy copy) {
         return new ArrayList<>(borrowRepository.findAllByCopyAndReturnDateIsNull(copy));
     }
+
     @Override
-    public List<Borrow> findAllByReaderAndReturnDateIsNull(Reader reader) {
+    public List<Borrow> getBorrowsForReader(final Reader reader) {
         return new ArrayList<>(borrowRepository.findAllByReaderAndReturnDateIsNull(reader));
     }
 
-    @Override
-    public List<Borrow> getBorrowedBooks(final Reader reader) {
-        return new ArrayList<>(findAllByReaderAndReturnDateIsNull(reader));
+    public void returnBorrowedBook(final Long borrowId) {
+        Borrow borrow = findOne(borrowId);
+        if (borrow.getReturnDate() == null) {
+            borrow.setReturnDate(LocalDate.now());
+            save(borrow);
+        }
     }
 }

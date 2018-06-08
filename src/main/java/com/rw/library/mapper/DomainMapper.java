@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class DomainMapper {
-    //    @Autowired
+
     private final BookService bookService;
     private final CopyService copyService;
     private final ReaderService readerService;
@@ -50,7 +50,7 @@ public class DomainMapper {
                 reader.getFirstname(),
                 reader.getLastname(),
                 reader.getBorrows().size(),
-                borrowService.getBorrowedBooks(reader).size());
+                borrowService.getBorrowsForReader(reader).size());
     }
 
     public List<ReaderDto> mapToReadersDtoList(final List<?> readers) {
@@ -61,7 +61,7 @@ public class DomainMapper {
     }
 
     public Reader mapReaderIdToReader(final Long readerId) {
-        return readerService.getById(readerId);
+        return readerService.findOne(readerId);
     }
 
     public Borrow mapToBorrow(final BorrowDto borrowDto) {
@@ -70,8 +70,8 @@ public class DomainMapper {
                 null,
                 LocalDate.now(),
                 null,
-                readerService.getById(borrowDto.getReader_id()),
-                copyService.getById(borrowDto.getCopy_id())
+                readerService.findOne(borrowDto.getReader_id()),
+                copyService.findOne(borrowDto.getCopy_id())
         );
     }
 
@@ -128,7 +128,7 @@ public class DomainMapper {
     }
 
     public Copy mapToCopy(final CopyDto copyDto) {
-        Book book = bookService.getById(copyDto.getBookId());
+        Book book = (copyDto.getBookId() != null) ? bookService.findOne(copyDto.getBookId()) : null;
         return new Copy(
                 copyDto.getId(),
                 null,

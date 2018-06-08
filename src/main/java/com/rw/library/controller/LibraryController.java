@@ -7,8 +7,6 @@ import com.rw.library.service.BorrowService;
 import com.rw.library.service.CopyService;
 import com.rw.library.service.ReaderService;
 import com.rw.library.validator.DomainObjectValidator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +18,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/library")
 public class LibraryController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LibraryController.class);
 
     private final BookService bookService;
     private final CopyService copyService;
@@ -40,58 +37,61 @@ public class LibraryController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getAvailableCopies")
-    public List<CopyDto> getAvailableCopies(@RequestParam Long book_id) {
-        return domainMapper.mapToCopyDtoList(copyService.getAvailableCopies(book_id));
+    public List<CopyDto> getAvailableCopies(@RequestParam Long bookId) {
+        domainObjectValidator.validateBookId(bookId);
+        return domainMapper.mapToCopyDtoList(copyService.getAvailableCopies(bookId));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getBorrowedBooks")
-    public List<BorrowedDto> getBorrowedBooks(@RequestParam Long reader_id) {
-        return domainMapper.mapToBorrowedList(borrowService.getBorrowedBooks(domainMapper.mapReaderIdToReader(reader_id)));
+    public List<BorrowedDto> getBorrowedBooks(@RequestParam Long readerId) {
+        domainObjectValidator.validateReaderId(readerId);
+        return domainMapper.mapToBorrowedList(borrowService.getBorrowsForReader(domainMapper.mapReaderIdToReader(readerId)));
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/returnBook")
-    public void returnBook(@RequestParam Long borrow_id) {
-        borrowService.returnBook(borrow_id);
+    @RequestMapping(method = RequestMethod.PUT, value = "/returnBorrowedBook")
+    public void returnBook(@RequestParam Long borrowId) {
+        domainObjectValidator.validateBorrowId(borrowId);
+        borrowService.returnBorrowedBook(borrowId);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getBooks")
     public List<BookDto> getBooks() {
-        return domainMapper.mapToBookDtoList(bookService.listAll());
+        return domainMapper.mapToBookDtoList(bookService.findAll());
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getCopies")
     public List<CopyDto> getCopies() {
-        return domainMapper.mapToCopyDtoList(copyService.listAll());
+        return domainMapper.mapToCopyDtoList(copyService.findAll());
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getReaders")
     public List<ReaderDto> getReaders() {
-        return domainMapper.mapToReadersDtoList(readerService.listAll());
+        return domainMapper.mapToReadersDtoList(readerService.findAll());
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getBorrows")
     public List<BorrowDto> getBorrows() {
-        return domainMapper.mapToBorrowsDtoList(borrowService.listAll());
+        return domainMapper.mapToBorrowsDtoList(borrowService.findAll());
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/createBook", consumes = MediaType.APPLICATION_JSON_VALUE)
     public BookDto createBook(@RequestBody BookDto bookDto) {
-        return domainMapper.mapToBookDto(bookService.saveOrUpdate(domainMapper.mapToBook(bookDto)));
+        return domainMapper.mapToBookDto(bookService.save(domainMapper.mapToBook(bookDto)));
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/createCopy", consumes = MediaType.APPLICATION_JSON_VALUE)
     public CopyDto createCopy(@RequestBody CopyDto copyDto) {
-        return domainMapper.mapToCopyDto(copyService.saveOrUpdate(domainMapper.mapToCopy(copyDto)));
+        return domainMapper.mapToCopyDto(copyService.save(domainMapper.mapToCopy(copyDto)));
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/createReader", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ReaderDto createReader(@RequestBody ReaderDto readerDto) {
-        return domainMapper.mapToReaderDto(readerService.saveOrUpdate(domainMapper.mapToReader(readerDto)));
+        return domainMapper.mapToReaderDto(readerService.save(domainMapper.mapToReader(readerDto)));
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/createBorrow", consumes = MediaType.APPLICATION_JSON_VALUE)
     public BorrowDto createBorrow(@RequestBody BorrowDto borrowDto) {
-        return domainMapper.mapToBorrowDto(borrowService.saveOrUpdate(domainMapper.mapToBorrow(borrowDto)));
+        return domainMapper.mapToBorrowDto(borrowService.save(domainMapper.mapToBorrow(borrowDto)));
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateBook", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -102,12 +102,13 @@ public class LibraryController {
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateReader", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ReaderDto updateReader(@RequestBody ReaderDto readerDto) {
+        domainObjectValidator.validateReader(readerDto);
         return domainMapper.mapToReaderDto(readerService.update(domainMapper.mapToReader(readerDto)));
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateCopy", consumes = MediaType.APPLICATION_JSON_VALUE)
     public CopyDto updateCopy(@RequestBody CopyDto copyDto) {
-        domainObjectValidator.validateCopyId(copyDto.getId());
+        domainObjectValidator.validateCopy(copyDto);
         return domainMapper.mapToCopyDto(copyService.update(domainMapper.mapToCopy(copyDto)));
     }
 
@@ -121,5 +122,17 @@ public class LibraryController {
     public void deleteCopy(@RequestParam Long copyId) {
         domainObjectValidator.validateCopyId(copyId);
         copyService.delete(copyId);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/deleteReader")
+    public void deleteReader(@RequestParam Long readerId) {
+        domainObjectValidator.validateReaderId(readerId);
+        readerService.delete(readerId);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/deleteBorrow")
+    public void deleteBorrow(@RequestParam Long borrowId) {
+        domainObjectValidator.validateBorrowId(borrowId);
+        borrowService.delete(borrowId);
     }
 }

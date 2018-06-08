@@ -3,6 +3,8 @@ package com.rw.library.service;
 import com.rw.library.domain.Reader;
 import com.rw.library.repository.ReaderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -21,36 +23,46 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     @Override
-    public List<Reader> listAll() {
+    public Reader findOne(final Long id) {
+        return readerRepository.findOne(id);
+    }
+
+    @Override
+    public List<Reader> findAll() {
         List<Reader> readers = new ArrayList<>();
         readerRepository.findAll().forEach(readers::add);
         return readers;
     }
 
     @Override
-    public Reader getById(Long id) {
-        return Optional.ofNullable(readerRepository.findOne(id)).orElse(new Reader());
+    public Page<Reader> findAll(final Pageable pageable) {
+        return readerRepository.findAll(pageable);
     }
 
     @Override
-    public Reader saveOrUpdate(Reader reader) {
-        return Optional.ofNullable(readerRepository.save(reader)).orElse(new Reader());
+    public Reader save(final Reader reader) {
+        return readerRepository.save(reader);
     }
 
     @Override
-    public Reader update(Reader updatedReader) {
-        Reader reader = readerRepository.findOne(updatedReader.getId()); //nullPointerException if reader not exists
+    public Reader update(final Reader updatedReader) {
+        Reader reader = findOne(updatedReader.getId());
         if (!updatedReader.getFirstname().equals(reader.getFirstname())) {
             reader.setFirstname(Optional.ofNullable(updatedReader.getFirstname()).orElse(reader.getFirstname()));
         }
         if (!updatedReader.getLastname().equals(reader.getLastname())) {
             reader.setLastname(Optional.ofNullable(updatedReader.getLastname()).orElse(reader.getLastname()));
         }
-        return Optional.ofNullable(readerRepository.save(reader)).orElse(new Reader());
+        return save(reader);
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(final Long id) {
         readerRepository.delete(id);
+    }
+
+    @Override
+    public boolean exists(final Long id) {
+        return readerRepository.exists(id);
     }
 }

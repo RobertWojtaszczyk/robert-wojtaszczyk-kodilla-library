@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Transactional
 @Service
@@ -23,47 +22,42 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Optional<Book> findById(Long bookId) {
-        return bookRepository.findById(bookId);
+    public Book findOne(final Long id) {
+        return bookRepository.findOne(id);
     }
 
     @Override
-    public List<Book> listAll() {
+    public List<Book> findAll() {
         List<Book> books = new ArrayList<>();
         bookRepository.findAll().forEach(books::add);
         return books;
     }
 
     @Override
-    public Page<Book> listAllPageable(Pageable pageable) {
+    public Page<Book> findAll(final Pageable pageable) {
         return bookRepository.findAll(pageable);
     }
 
     @Override
-    public boolean isValidId(final Long id) {
-            return bookRepository.exists(id);
+    public Book save(final Book book) {
+        return bookRepository.save(book);
     }
 
     @Override
-    public Book getById(Long id) {
-        return Optional.ofNullable(bookRepository.findOne(id)).orElse(new Book());
-    }
-
-    @Override
-    public Book saveOrUpdate(final Book book) {
-        return Optional.ofNullable(bookRepository.save(book)).orElse(new Book());
-    }
-
-    @Override
-    public Book update(Book updatedBook) {
-            Book book = bookRepository.findOne(updatedBook.getId());
+    public Book update(final Book updatedBook) {
+            Book book = findOne(updatedBook.getId());
             book.setAuthor(updatedBook.getAuthor());
             book.setTitle(updatedBook.getTitle());
-            return Optional.ofNullable(bookRepository.save(book)).orElse(new Book());
+            return save(book);
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(final Long id) {
         bookRepository.delete(id);
+    }
+
+    @Override
+    public boolean exists(final Long id) {
+        return bookRepository.exists(id);
     }
 }

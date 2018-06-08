@@ -7,12 +7,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CopyService extends CRUDService<Copy> {
-    List<Copy> getAvailableCopies(@Param("BOOK_ID") Long bookId);
-    List<Copy> getByBook(Book book);
+
+    Copy findOne(Long id);
+    List<Copy> findAll();
+    Page<Copy> findAll(Pageable pageable);
+    Copy save(Copy copy);
     Copy update(Copy copy);
-    Page<Copy> findAllByBook_Id(Pageable pageable, Long bookId);
-    Optional<Copy> findById(Long copyId);
+    void delete(Long id);
+    boolean exists(Long id);
+
+    List<Copy> getByBook(Book book);
+    Page<Copy> findAllByBookId(Pageable pageable, Long bookId);
+    List<Copy> getAvailableCopies(@Param("BOOK_ID") Long bookId);
 }
