@@ -59,7 +59,6 @@ public class DomainObjectValidator {
     }
 
     public void validateBook(final BookDto bookDto) {
-        validateBookId(bookDto.getId());
         if (bookDto.getTitle().length() < 3) {
             throw new EntityConstraintViolationException("Book: Please enter book title between 3 and 255 characters.");
         }
@@ -69,7 +68,6 @@ public class DomainObjectValidator {
     }
 
     public void validateReader(final ReaderDto readerDto) {
-        validateReaderId(readerDto.getId());
         if (readerDto.getFirstname().length() < 3) {
             throw new EntityConstraintViolationException("Reader: Please enter reader firstname between 3 and 255 characters.");
         }
@@ -79,7 +77,6 @@ public class DomainObjectValidator {
     }
 
     public void validateCopy(final CopyDto copyDto) {
-        validateCopyId(copyDto.getId());
         if (copyDto.getBookId() == (null)) {
             throw new EntityConstraintViolationException("Copy: Book Id can not be null!");
         }

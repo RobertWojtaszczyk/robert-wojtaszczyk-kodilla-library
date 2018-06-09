@@ -22,7 +22,7 @@ public class Book extends AbstractDomainClass {
         this.title = title;
         this.author = author;
     }
-//    @NotEmpty(message = "*Please provide a title")
+
     @Size(min = 3, max = 255, message = "Please enter book title, between {min} and {max} characters.")
     private String title;
     @Size(min = 3, max = 255, message = "Please enter author name, between {min} and {max} characters.")

@@ -22,19 +22,16 @@ public class DomainMapper {
     private final CopyService copyService;
     private final ReaderService readerService;
     private final BorrowService borrowService;
-    private final DomainObjectValidator domainObjectValidator;
 
     @Autowired
     public DomainMapper(final BookService bookService,
                         final CopyService copyService,
                         final ReaderService readerService,
-                        final BorrowService borrowService,
-                        final DomainObjectValidator domainObjectValidator) {
+                        final BorrowService borrowService) {
         this.bookService = bookService;
         this.copyService = copyService;
         this.readerService = readerService;
         this.borrowService = borrowService;
-        this.domainObjectValidator = domainObjectValidator;
     }
 
     public Reader mapToReader(final ReaderDto readerDto) {
