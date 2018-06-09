@@ -45,18 +45,6 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     @Override
-    public Reader update(final Reader updatedReader) {
-        Reader reader = findOne(updatedReader.getId());
-        if (!updatedReader.getFirstname().equals(reader.getFirstname())) {
-            reader.setFirstname(Optional.ofNullable(updatedReader.getFirstname()).orElse(reader.getFirstname()));
-        }
-        if (!updatedReader.getLastname().equals(reader.getLastname())) {
-            reader.setLastname(Optional.ofNullable(updatedReader.getLastname()).orElse(reader.getLastname()));
-        }
-        return save(reader);
-    }
-
-    @Override
     public void delete(final Long id) {
         readerRepository.delete(id);
     }

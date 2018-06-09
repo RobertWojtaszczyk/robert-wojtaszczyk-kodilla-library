@@ -14,7 +14,6 @@ public interface CopyService extends CRUDService<Copy> {
     List<Copy> findAll();
     Page<Copy> findAll(Pageable pageable);
     Copy save(Copy copy);
-    Copy update(Copy copy);
     void delete(Long id);
     boolean exists(Long id);
 

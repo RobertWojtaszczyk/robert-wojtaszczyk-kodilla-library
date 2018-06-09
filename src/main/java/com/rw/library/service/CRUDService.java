@@ -10,7 +10,6 @@ public interface CRUDService<T> {
     List<T> findAll();
     Page<T> findAll(Pageable pageable);
     T save(T domainObject);
-    T update(T domainObject);
     void delete(Long id);
     boolean exists(Long id);
 }

@@ -153,7 +153,8 @@
                 class="copy_update_form"
                 method="PUT"
                 action="http://localhost:8080/v1/library/updateBook2"
-                id="copy-update-form">
+                id="copy-update-form"
+                th:attr="bookId=${book.id}">
             <fieldset>
                 <div class="form-group">
                     <label for="sel1">Select Status:</label>
@@ -219,6 +220,7 @@
 
             var copyId = $(this).attr("copy-id");
             var copyStatus = $(this).find('[name="status"]').val();
+            var bookId = $(this).attr("bookId");
 
             var requestUrl = "http://localhost:8080/v1/library/updateCopy";
 
@@ -230,7 +232,8 @@
                 dataType: 'json',
                 data: JSON.stringify({
                     id: copyId,
-                    status: copyStatus
+                    status: copyStatus,
+                    bookId: bookId
                 }),
                 success: function(data) {
                     location.reload();
@@ -256,6 +259,7 @@
                 method: 'DELETE',
                 success: function() {
                     parentEl.slideUp(400, function() { parentEl.remove(); });
+                    location.reload();
                 },
                 error: function (e) {
                     console.log(e.responseJSON.errors);

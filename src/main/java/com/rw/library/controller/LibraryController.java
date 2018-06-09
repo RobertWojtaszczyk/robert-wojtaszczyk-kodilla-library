@@ -97,19 +97,25 @@ public class LibraryController {
     @RequestMapping(method = RequestMethod.PUT, value = "/updateBook", consumes = MediaType.APPLICATION_JSON_VALUE)
     public BookDto updateBook(@RequestBody BookDto bookDto) {
         domainObjectValidator.validateBook(bookDto);
-        return domainMapper.mapToBookDto(bookService.update(domainMapper.mapToBook(bookDto)));
+        return domainMapper.mapToBookDto(bookService.save(domainMapper.mapToUpdatedBook(bookDto)));
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateReader", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ReaderDto updateReader(@RequestBody ReaderDto readerDto) {
         domainObjectValidator.validateReader(readerDto);
-        return domainMapper.mapToReaderDto(readerService.update(domainMapper.mapToReader(readerDto)));
+        return domainMapper.mapToReaderDto(readerService.save(domainMapper.mapToUpdatedReader(readerDto)));
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateCopy", consumes = MediaType.APPLICATION_JSON_VALUE)
     public CopyDto updateCopy(@RequestBody CopyDto copyDto) {
         domainObjectValidator.validateCopy(copyDto);
-        return domainMapper.mapToCopyDto(copyService.update(domainMapper.mapToCopy(copyDto)));
+        return domainMapper.mapToCopyDto(copyService.save(domainMapper.mapToUpdatedCopy(copyDto)));
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/updateBorrow", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public BorrowDto updateBorrow(@RequestBody BorrowDto borrowDto) {
+        domainObjectValidator.validateBorrow(borrowDto);
+        return domainMapper.mapToBorrowDto(borrowService.save(domainMapper.mapToUpdatedBorrow(borrowDto)));
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/deleteBook")

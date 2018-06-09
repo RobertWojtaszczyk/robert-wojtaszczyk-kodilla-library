@@ -44,14 +44,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book update(final Book updatedBook) {
-            Book book = findOne(updatedBook.getId());
-            book.setAuthor(updatedBook.getAuthor());
-            book.setTitle(updatedBook.getTitle());
-            return save(book);
-    }
-
-    @Override
     public void delete(final Long id) {
         bookRepository.delete(id);
     }

@@ -25,7 +25,11 @@ public class DomainMapper {
     private final DomainObjectValidator domainObjectValidator;
 
     @Autowired
-    public DomainMapper(final BookService bookService, final CopyService copyService, final ReaderService readerService, final BorrowService borrowService, final DomainObjectValidator domainObjectValidator) {
+    public DomainMapper(final BookService bookService,
+                        final CopyService copyService,
+                        final ReaderService readerService,
+                        final BorrowService borrowService,
+                        final DomainObjectValidator domainObjectValidator) {
         this.bookService = bookService;
         this.copyService = copyService;
         this.readerService = readerService;
@@ -40,6 +44,13 @@ public class DomainMapper {
                 readerDto.getFirstname(),
                 readerDto.getLastname()
         );
+    }
+
+    public Reader mapToUpdatedReader(final ReaderDto readerDto) {
+        Reader reader = readerService.findOne(readerDto.getId());
+        reader.setFirstname(readerDto.getFirstname());
+        reader.setLastname(readerDto.getLastname());
+        return reader;
     }
 
     public ReaderDto mapToReaderDto(final Reader reader) {
@@ -70,9 +81,16 @@ public class DomainMapper {
                 null,
                 LocalDate.now(),
                 null,
-                readerService.findOne(borrowDto.getReader_id()),
-                copyService.findOne(borrowDto.getCopy_id())
+                readerService.findOne(borrowDto.getReaderId()),
+                copyService.findOne(borrowDto.getCopyId())
         );
+    }
+
+    public Borrow mapToUpdatedBorrow(final BorrowDto borrowDto) {
+        Borrow borrow = borrowService.findOne(borrowDto.getId());
+        borrow.setCopy(copyService.findOne(borrowDto.getCopyId()));
+        borrow.setReader(readerService.findOne(borrowDto.getReaderId()));
+        return borrow;
     }
 
     public BorrowDto mapToBorrowDto(final Borrow borrow) {
@@ -104,6 +122,13 @@ public class DomainMapper {
         );
     }
 
+    public Book mapToUpdatedBook(final BookDto bookDto) {
+        Book book = bookService.findOne(bookDto.getId());
+        book.setAuthor(bookDto.getAuthor());
+        book.setTitle(bookDto.getTitle());
+        return book;
+    }
+
     public BookDto mapToBookDto(final Book book) {
         return new BookDto(
                 book.getId(),
@@ -128,13 +153,19 @@ public class DomainMapper {
     }
 
     public Copy mapToCopy(final CopyDto copyDto) {
-        Book book = (copyDto.getBookId() != null) ? bookService.findOne(copyDto.getBookId()) : null;
         return new Copy(
                 copyDto.getId(),
                 null,
                 copyDto.getStatus(),
-                book
+                bookService.findOne(copyDto.getBookId())
         );
+    }
+
+    public Copy mapToUpdatedCopy(final CopyDto copyDto) {
+        Copy copy = copyService.findOne(copyDto.getId());
+        copy.setStatus(copyDto.getStatus());
+        copy.setBook(bookService.findOne(copyDto.getBookId()));
+        return copy;
     }
 
     public CopyDto mapToCopyDto(final Copy copy) {

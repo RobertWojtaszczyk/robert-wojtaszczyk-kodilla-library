@@ -12,7 +12,6 @@ public interface BookService extends CRUDService<Book> {
     List<Book> findAll();
     Page<Book> findAll(Pageable pageable);
     Book save(Book book);
-    Book update(Book book);
     void delete(Long id);
     boolean exists(Long id);
 }

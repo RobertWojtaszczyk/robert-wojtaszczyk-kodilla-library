@@ -48,18 +48,6 @@ public class CopyServiceImpl implements CopyService {
     }
 
     @Override
-    public Copy update(final Copy updatedCopy) {
-        Copy copy = findOne(updatedCopy.getId());
-        if (updatedCopy.getStatus() != null) {
-            copy.setStatus(updatedCopy.getStatus());
-        }
-        if (updatedCopy.getBook() != null) {
-            copy.setBook(updatedCopy.getBook());
-        }
-        return save(copy);
-    }
-
-    @Override
     public void delete(final Long id) {
         copyRepository.delete(id);
     }

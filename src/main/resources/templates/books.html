@@ -271,6 +271,7 @@
                 method: 'DELETE',
                 success: function() {
                     parentEl.slideUp(400, function() { parentEl.remove(); });
+                    location.reload();
                 },
                 error: function (e) {
                     console.log(e.responseJSON.errors);

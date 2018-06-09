@@ -35,9 +35,12 @@ public class DomainObjectValidator {
         this.borrowService = borrowService;
     }
 
-    public void validateBookId(final Long bookId) {
+    public void validateBookId(final Long bookId) /*throws DomainObjectNotFoundException*/ {
         Optional.ofNullable(bookService.findOne(bookId))
                 .orElseThrow(() -> new DomainObjectNotFoundException("Book", bookId));
+        /*if (!bookService.exists(bookId)) { //which way is better?
+            throw new DomainObjectNotFoundException("Book", bookId);
+        }*/
     }
 
     public void validateCopyId(final Long copyId) {
@@ -77,13 +80,23 @@ public class DomainObjectValidator {
 
     public void validateCopy(final CopyDto copyDto) {
         validateCopyId(copyDto.getId());
+        if (copyDto.getBookId() == (null)) {
+            throw new EntityConstraintViolationException("Copy: Book Id can not be null!");
+        }
+        validateBookId(copyDto.getBookId());
         if (Arrays.stream(Status.values()).noneMatch(status -> status.equals(copyDto.getStatus()))) {
             throw new EntityConstraintViolationException("Copy: wrong name of copy status!");
         }
     }
 
     public void validateBorrow(final BorrowDto borrowDto) {
-        validateCopyId(borrowDto.getCopy_id());
-        validateReaderId(borrowDto.getReader_id());
+        if (borrowDto.getCopyId() == (null)) {
+            throw new EntityConstraintViolationException("Borrow: Copy Id can not be null!");
+        }
+        if (borrowDto.getReaderId() == (null)) {
+            throw new EntityConstraintViolationException("Borrow: Reader Id can not be null!");
+        }
+        validateCopyId(borrowDto.getCopyId());
+        validateReaderId(borrowDto.getReaderId());
     }
 }

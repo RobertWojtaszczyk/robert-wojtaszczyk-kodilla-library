@@ -13,6 +13,6 @@ public class BorrowDto {
     private String lastUpdated;
     private String borrowDate;
     private String returnDate;
-    private Long reader_id;
-    private Long copy_id;
+    private Long readerId;
+    private Long copyId;
 }

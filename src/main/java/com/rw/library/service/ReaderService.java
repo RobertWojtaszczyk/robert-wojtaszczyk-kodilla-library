@@ -11,7 +11,6 @@ public interface ReaderService extends CRUDService<Reader> {
     List<Reader> findAll();
     Page<Reader> findAll(Pageable pageable);
     Reader save(Reader domainObject);
-    Reader update(Reader domainObject);
     void delete(Long id);
     boolean exists(Long id);
 }

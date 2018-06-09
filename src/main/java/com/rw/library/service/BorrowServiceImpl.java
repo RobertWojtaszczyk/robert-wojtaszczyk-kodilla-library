@@ -47,14 +47,6 @@ public class BorrowServiceImpl implements BorrowService {
     }
 
     @Override
-    public Borrow update(final Borrow updatedBorrow) {
-        Borrow borrow = findOne(updatedBorrow.getId());
-        borrow.setCopy(updatedBorrow.getCopy());
-        borrow.setReader(updatedBorrow.getReader());
-        return save(borrow);
-    }
-
-    @Override
     public void delete(final Long id) {
         borrowRepository.delete(id);
     }
