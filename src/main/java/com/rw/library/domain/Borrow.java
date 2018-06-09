@@ -69,15 +69,6 @@ public class Borrow extends AbstractDomainClass {
     }
 
     @Override
-    public String toString() {
-        return "Borrow{" +
-                "id=" + getId() +
-                ", borrowDate=" + borrowDate +
-                ", returnDate=" + returnDate +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Borrow)) return false;

@@ -69,14 +69,6 @@ public class Copy extends AbstractDomainClass {
     }
 
     @Override
-    public String toString() {
-        return "Copy{" +
-                "id=" + getId() +
-                ", status=" + status +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

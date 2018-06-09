@@ -17,9 +17,9 @@ public class Reader extends AbstractDomainClass {
     public Reader() {
     }
 
-    public Reader(Long id, LocalDateTime dateCreated, String name, String lastname) {
+    public Reader(Long id, LocalDateTime dateCreated, String firstname, String lastname) {
         super(id, dateCreated);
-        this.firstname = name;
+        this.firstname = firstname;
         this.lastname = lastname;
     }
 
@@ -56,15 +56,6 @@ public class Reader extends AbstractDomainClass {
 
     public void setBorrows(List<Borrow> borrows) {
         this.borrows = borrows;
-    }
-
-    @Override
-    public String toString() {
-        return "Reader{" +
-                "id=" + getId() +
-                ", name='" + firstname + '\'' +
-                ", surname='" + lastname + '\'' +
-                '}';
     }
 
     @Override
