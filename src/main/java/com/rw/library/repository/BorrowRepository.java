@@ -10,4 +10,5 @@ import java.util.List;
 public interface BorrowRepository extends PagingAndSortingRepository<Borrow, Long> {
     List<Borrow> findAllByCopyAndReturnDateIsNull(Copy copy);
     List<Borrow> findAllByReaderAndReturnDateIsNull(Reader reader);
+    List<Borrow> findAllByReaderIdAndReturnDateIsNull(Long id);
 }

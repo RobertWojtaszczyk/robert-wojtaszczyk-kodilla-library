@@ -35,7 +35,7 @@ public class BorrowServiceTest {
         //Given
         Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
         Copy copy = new Copy(1L, Status.OK, book);
-        Reader reader = new Reader(1L, LocalDateTime.now(), "John", "Doe");
+        Reader reader = new Reader(1L, "John", "Doe");
         Borrow borrow = new Borrow(1L, LocalDateTime.now().minusDays(1), LocalDate.now().minusDays(1), LocalDate.now(), reader, copy);
         when(borrowRepository.findOne(1L)).thenReturn(borrow);
         //When
@@ -55,7 +55,7 @@ public class BorrowServiceTest {
         List<Borrow> borrows = new ArrayList<>();
         Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
         Copy copy = new Copy(1L, Status.OK, book);
-        Reader reader = new Reader(1L, LocalDateTime.now(), "John", "Doe");
+        Reader reader = new Reader(1L, "John", "Doe");
         borrows.add(new Borrow(1L, LocalDateTime.now().minusDays(1), LocalDate.now().minusDays(1), LocalDate.now(), reader, copy));
         when(borrowRepository.findAll()).thenReturn(borrows);
         //When
@@ -75,7 +75,7 @@ public class BorrowServiceTest {
         //Given
         Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
         Copy copy = new Copy(1L, Status.OK, book);
-        Reader reader = new Reader(1L, LocalDateTime.now(), "John", "Doe");
+        Reader reader = new Reader(1L, "John", "Doe");
         Borrow borrow = new Borrow(1L, LocalDateTime.now().minusDays(1), LocalDate.now().minusDays(1), LocalDate.now(), reader, copy);
         when(borrowRepository.save(borrow)).thenReturn(borrow);
         //When
@@ -94,7 +94,7 @@ public class BorrowServiceTest {
         //Given
         Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
         Copy copy = new Copy(1L, Status.OK, book);
-        Reader reader = new Reader(1L, LocalDateTime.now(), "John", "Doe");
+        Reader reader = new Reader(1L, "John", "Doe");
         Borrow borrow = new Borrow(1L, LocalDateTime.now().minusDays(1), LocalDate.now().minusDays(1), LocalDate.now(), reader, copy);
         when(borrowRepository.exists(borrow.getId())).thenReturn(true);
         //When

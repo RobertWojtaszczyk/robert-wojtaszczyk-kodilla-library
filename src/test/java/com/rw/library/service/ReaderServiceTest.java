@@ -28,7 +28,7 @@ public class ReaderServiceTest {
     @Test
     public void shouldFetchOneReader() {
         //Given
-        Reader reader = new Reader(1L, LocalDateTime.now(), "John", "Doe");
+        Reader reader = new Reader(1L, "John", "Doe");
         when(readerRepository.findOne(1L)).thenReturn(reader);
         //When
         Reader reader1 = readerService.findOne(1L);
@@ -43,7 +43,7 @@ public class ReaderServiceTest {
     public void shouldFetchReaderList() {
         //Given
         List<Reader> readers = new ArrayList<>();
-        readers.add(new Reader(1L, LocalDateTime.now(), "John", "Doe"));
+        readers.add(new Reader(1L, "John", "Doe"));
         when(readerRepository.findAll()).thenReturn(readers);
         //When
         List<Reader> readersList = readerService.findAll();
@@ -58,7 +58,7 @@ public class ReaderServiceTest {
     @Test
     public void shouldSaveReader() {
         //Given
-        Reader reader = new Reader(1L, LocalDateTime.now(), "John", "Doe");
+        Reader reader = new Reader(1L, "John", "Doe");
         when(readerRepository.save(reader)).thenReturn(reader);
         //When
         Reader reader1 = readerService.save(reader);
@@ -72,7 +72,7 @@ public class ReaderServiceTest {
     @Test
     public void shouldCheckIfReaderExist() {
         //Given
-        Reader reader = new Reader(1L, LocalDateTime.now(), "John", "Doe");
+        Reader reader = new Reader(1L, "John", "Doe");
         when(readerRepository.exists(reader.getId())).thenReturn(true);
         //When
         Boolean readerExist = readerService.exists(reader.getId());

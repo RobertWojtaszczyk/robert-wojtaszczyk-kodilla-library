@@ -62,8 +62,8 @@ public class BorrowServiceImpl implements BorrowService {
     }
 
     @Override
-    public List<Borrow> getBorrowsForReader(final Reader reader) {
-        return new ArrayList<>(borrowRepository.findAllByReaderAndReturnDateIsNull(reader));
+    public List<Borrow> getBorrowsForReaderId(final Long readerId) {
+        return new ArrayList<>(borrowRepository.findAllByReaderIdAndReturnDateIsNull(readerId));
     }
 
     public void returnBorrowedBook(final Long borrowId) {

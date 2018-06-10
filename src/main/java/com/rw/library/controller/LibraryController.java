@@ -45,7 +45,7 @@ public class LibraryController {
     @RequestMapping(method = RequestMethod.GET, value = "/getBorrowedBooks")
     public List<BorrowedDto> getBorrowedBooks(@RequestParam Long readerId) {
         domainObjectValidator.validateReaderId(readerId);
-        return domainMapper.mapToBorrowedList(borrowService.getBorrowsForReader(domainMapper.mapReaderIdToReader(readerId)));
+        return domainMapper.mapToBorrowedList(borrowService.getBorrowsForReaderId(readerId));
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/returnBorrowedBook")

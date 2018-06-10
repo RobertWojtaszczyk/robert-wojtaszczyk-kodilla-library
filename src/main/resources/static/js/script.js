@@ -25,20 +25,20 @@ $(document).ready(function() {
 
     function borrowBook(readerId, copyId, bookId) {
         $.ajax({
-            url: "http://localhost:8080//v1/library/createBorrow",
+            url: "http://localhost:8080/v1/library/createBorrow",
             method: 'POST',
             processData: false,
             contentType: "application/json; charset=utf-8",
             dataType: 'json',
             data: JSON.stringify({
-                reader_id: readerId,
-                copy_id: copyId
+                readerId: readerId,
+                copyId: copyId
             }),
             success: function() {
                 generateReaders();
                 generateBooks(readerId);
-                generateAvCopies('http://localhost:8080/v1/library/getAvailableCopies?book_id=' + bookId, readerId);
-                generateBorrowed('http://localhost:8080/v1/library/getBorrowedBooks?reader_id=' + readerId);
+                generateAvCopies('http://localhost:8080/v1/library/getAvailableCopies?bookId=' + bookId, readerId);
+                generateBorrowed('http://localhost:8080/v1/library/getBorrowedBooks?readerId=' + readerId);
             }
         })
     }
@@ -72,9 +72,9 @@ $(document).ready(function() {
 
         $("#datatable_borrowed_row tbody").on( 'click', 'button', function () {
             var data = borrowedTable.row($(this).parents('tr')).data();
-            var urlReturnBook = 'http://localhost:8080/v1/library/returnBook?borrow_id='+data.id;
+            var urlReturnBook = 'http://localhost:8080/v1/library/returnBorrowedBook?borrowId='+data.id;
             // var id = readersTable.row(this).id();
-            var urlBorrowed = 'http://localhost:8080/v1/library/getBorrowedBooks?reader_id='+data.readerId;
+            var urlBorrowed = 'http://localhost:8080/v1/library/getBorrowedBooks?readerId='+data.readerId;
             returnBook(urlReturnBook, urlBorrowed);
         } );
     }
@@ -135,7 +135,7 @@ $(document).ready(function() {
 
         $("#datatable_books_row tbody").on( 'click', 'button', function () {
             var data = booksTable.row($(this).parents('tr')).data();
-            var urlAvCopies = 'http://localhost:8080/v1/library/getAvailableCopies?book_id='+data.id;
+            var urlAvCopies = 'http://localhost:8080/v1/library/getAvailableCopies?bookId='+data.id;
             generateAvCopies(urlAvCopies, readerId);
         } );
     }
@@ -174,7 +174,7 @@ $(document).ready(function() {
         $("#datatable_readers_row tbody").on( 'click', '#btn2', function () {
             var data = readersTable.row($(this).parents('tr')).data();
             // var id = readersTable.row($(this).parents('tr')).id();
-            var urlBorrowed = 'http://localhost:8080/v1/library/getBorrowedBooks?reader_id='+data.id;
+            var urlBorrowed = 'http://localhost:8080/v1/library/getBorrowedBooks?readerId='+data.id;
             // alert("Requesting borrowed books data from: " + url);
             generateBorrowed(urlBorrowed);
         } );

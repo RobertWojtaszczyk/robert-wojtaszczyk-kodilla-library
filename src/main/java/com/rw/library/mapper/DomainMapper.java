@@ -5,7 +5,6 @@ import com.rw.library.service.BookService;
 import com.rw.library.service.BorrowService;
 import com.rw.library.service.CopyService;
 import com.rw.library.service.ReaderService;
-import com.rw.library.validator.DomainObjectValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
@@ -37,7 +36,6 @@ public class DomainMapper {
     public Reader mapToReader(final ReaderDto readerDto) {
         return new Reader(
                 readerDto.getId(),
-                null,
                 readerDto.getFirstname(),
                 readerDto.getLastname()
         );
@@ -58,7 +56,7 @@ public class DomainMapper {
                 reader.getFirstname(),
                 reader.getLastname(),
                 reader.getBorrows().size(),
-                borrowService.getBorrowsForReader(reader).size());
+                borrowService.getBorrowsForReaderId(reader.getId()).size());
     }
 
     public List<ReaderDto> mapToReadersDtoList(final List<?> readers) {
@@ -66,10 +64,6 @@ public class DomainMapper {
                 .map(o -> (Reader)o)
                 .map(this::mapToReaderDto)
                 .collect(Collectors.toList());
-    }
-
-    public Reader mapReaderIdToReader(final Long readerId) {
-        return readerService.findOne(readerId);
     }
 
     public Borrow mapToBorrow(final BorrowDto borrowDto) {

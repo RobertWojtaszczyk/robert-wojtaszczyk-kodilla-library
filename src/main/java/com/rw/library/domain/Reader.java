@@ -17,8 +17,8 @@ public class Reader extends AbstractDomainClass {
     public Reader() {
     }
 
-    public Reader(Long id, LocalDateTime dateCreated, String firstname, String lastname) {
-        super(id, dateCreated);
+    public Reader(Long id, String firstname, String lastname) {
+        super(id);
         this.firstname = firstname;
         this.lastname = lastname;
     }
