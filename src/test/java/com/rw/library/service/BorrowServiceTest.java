@@ -17,9 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -36,15 +34,14 @@ public class BorrowServiceTest {
         Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
         Copy copy = new Copy(1L, Status.OK, book);
         Reader reader = new Reader(1L, "John", "Doe");
-        Borrow borrow = new Borrow(1L, LocalDateTime.now().minusDays(1), LocalDate.now().minusDays(1), LocalDate.now(), reader, copy);
+        Borrow borrow = new Borrow(1L, LocalDate.now(), reader, copy);
         when(borrowRepository.findOne(1L)).thenReturn(borrow);
         //When
         Borrow borrow1 = borrowService.findOne(1L);
         //Then
         assertNotNull(borrow1);
         assertEquals(1L, borrow1.getId().longValue());
-        assertEquals(LocalDate.now().minusDays(1), borrow1.getBorrowDate());
-        assertEquals(LocalDate.now(), borrow1.getReturnDate());
+        assertEquals(LocalDate.now(), borrow1.getBorrowDate());
         assertEquals(copy, borrow1.getCopy());
         assertEquals(reader, borrow1.getReader());
     }
@@ -56,7 +53,7 @@ public class BorrowServiceTest {
         Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
         Copy copy = new Copy(1L, Status.OK, book);
         Reader reader = new Reader(1L, "John", "Doe");
-        borrows.add(new Borrow(1L, LocalDateTime.now().minusDays(1), LocalDate.now().minusDays(1), LocalDate.now(), reader, copy));
+        borrows.add(new Borrow(1L, LocalDate.now(), reader, copy));
         when(borrowRepository.findAll()).thenReturn(borrows);
         //When
         List<Borrow> borrowsList = borrowService.findAll();
@@ -64,8 +61,7 @@ public class BorrowServiceTest {
         assertNotNull(borrowsList);
         assertEquals(1, borrowsList.size());
         assertEquals(1L, borrowsList.get(0).getId().longValue());
-        assertEquals(LocalDate.now().minusDays(1), borrowsList.get(0).getBorrowDate());
-        assertEquals(LocalDate.now(), borrowsList.get(0).getReturnDate());
+        assertEquals(LocalDate.now(), borrowsList.get(0).getBorrowDate());
         assertEquals(copy, borrowsList.get(0).getCopy());
         assertEquals(reader, borrowsList.get(0).getReader());
     }
@@ -76,15 +72,14 @@ public class BorrowServiceTest {
         Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
         Copy copy = new Copy(1L, Status.OK, book);
         Reader reader = new Reader(1L, "John", "Doe");
-        Borrow borrow = new Borrow(1L, LocalDateTime.now().minusDays(1), LocalDate.now().minusDays(1), LocalDate.now(), reader, copy);
+        Borrow borrow = new Borrow(1L, LocalDate.now(), reader, copy);
         when(borrowRepository.save(borrow)).thenReturn(borrow);
         //When
         Borrow borrow1 = borrowService.save(borrow);
         //Then
         assertNotNull(borrow1);
         assertEquals(1L, borrow1.getId().longValue());
-        assertEquals(LocalDate.now().minusDays(1), borrow1.getBorrowDate());
-        assertEquals(LocalDate.now(), borrow1.getReturnDate());
+        assertEquals(LocalDate.now(), borrow1.getBorrowDate());
         assertEquals(copy, borrow1.getCopy());
         assertEquals(reader, borrow1.getReader());
     }
@@ -95,7 +90,7 @@ public class BorrowServiceTest {
         Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
         Copy copy = new Copy(1L, Status.OK, book);
         Reader reader = new Reader(1L, "John", "Doe");
-        Borrow borrow = new Borrow(1L, LocalDateTime.now().minusDays(1), LocalDate.now().minusDays(1), LocalDate.now(), reader, copy);
+        Borrow borrow = new Borrow(1L, LocalDate.now(), reader, copy);
         when(borrowRepository.exists(borrow.getId())).thenReturn(true);
         //When
         Boolean borrowExist = borrowService.exists(borrow.getId());

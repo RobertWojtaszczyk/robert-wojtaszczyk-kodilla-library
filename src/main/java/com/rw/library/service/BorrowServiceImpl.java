@@ -1,8 +1,6 @@
 package com.rw.library.service;
 
 import com.rw.library.domain.Borrow;
-import com.rw.library.domain.Copy;
-import com.rw.library.domain.Reader;
 import com.rw.library.repository.BorrowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -54,11 +52,6 @@ public class BorrowServiceImpl implements BorrowService {
     @Override
     public boolean exists(final Long id) {
         return borrowRepository.exists(id);
-    }
-
-    @Override
-    public List<Borrow> findAllByCopyAndReturnDateIsNull(final Copy copy) {
-        return new ArrayList<>(borrowRepository.findAllByCopyAndReturnDateIsNull(copy));
     }
 
     @Override

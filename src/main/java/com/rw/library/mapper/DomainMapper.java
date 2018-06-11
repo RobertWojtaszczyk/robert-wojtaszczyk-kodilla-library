@@ -69,9 +69,7 @@ public class DomainMapper {
     public Borrow mapToBorrow(final BorrowDto borrowDto) {
         return new Borrow(
                 borrowDto.getId(),
-                null,
                 LocalDate.now(),
-                null,
                 readerService.findOne(borrowDto.getReaderId()),
                 copyService.findOne(borrowDto.getCopyId())
         );
@@ -177,12 +175,7 @@ public class DomainMapper {
     }
 
     public Page<CopyDto> mapToCopyDtoPage(final Page<Copy> copies) {
-        return copies.map(new Converter<Copy, CopyDto>() {
-            @Override
-            public CopyDto convert(Copy source) {
-                return mapToCopyDto(source);
-            }
-        });
+        return copies.map(this::mapToCopyDto);
     }
 
     public BorrowedDto mapToBorrowed(final Borrow borrow) {

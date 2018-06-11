@@ -17,10 +17,9 @@ public class Borrow extends AbstractDomainClass {
         this.returnDate = returnDate;
     }
 
-    public Borrow(Long id, LocalDateTime dateCreated, LocalDate borrowDate, LocalDate returnDate, Reader reader, Copy copy) {
-        super(id, dateCreated);
+    public Borrow(Long id, LocalDate borrowDate, Reader reader, Copy copy) {
+        super(id);
         this.borrowDate = borrowDate;
-        this.returnDate = returnDate;
         this.reader = reader;
         this.copy = copy;
     }

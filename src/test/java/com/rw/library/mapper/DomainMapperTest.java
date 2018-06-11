@@ -75,7 +75,7 @@ public class DomainMapperTest {
         Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
         Copy copy = new Copy(1L, Status.OK, book);
         Reader reader = new Reader(1L, "Adam", "Smith");
-        Borrow borrow = new Borrow(1L, LocalDateTime.now(), LocalDate.now(), LocalDate.now(), reader, copy);
+        Borrow borrow = new Borrow(1L, LocalDate.now(), reader, copy);
         List<Borrow> borrows = new ArrayList<>();
         borrows.add(borrow);
         LocalDateTime dateTime = LocalDateTime.now();
@@ -95,6 +95,34 @@ public class DomainMapperTest {
         assertEquals(1, readerDto.getCurrentlyBorrowedBooks());
     }
 
+    @Test
+    public void testMapToReaderSDtoList() {
+        //Given
+        Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
+        Copy copy = new Copy(1L, Status.OK, book);
+        Reader reader = new Reader(1L, "Adam", "Smith");
+        Borrow borrow = new Borrow(1L, LocalDate.now(), reader, copy);
+        List<Borrow> borrows = new ArrayList<>();
+        borrows.add(borrow);
+        LocalDateTime dateTime = LocalDateTime.now();
+        reader.setDateCreated(dateTime);
+        reader.setLastUpdated(dateTime);
+        reader.getBorrows().add(borrow);
+        List<Reader> readers = new ArrayList<>();
+        readers.add(reader);
+        when(borrowService.getBorrowsForReaderId(reader.getId())).thenReturn(borrows);
+        //When
+        List<ReaderDto> readerDtoList = domainMapper.mapToReadersDtoList(readers);
+        //Then
+        assertEquals(1, readerDtoList.size());
+        assertEquals(1L, readerDtoList.get(0).getId().longValue());
+        assertEquals("Adam", readerDtoList.get(0).getFirstname());
+        assertEquals("Smith", readerDtoList.get(0).getLastname());
+        assertEquals(dateTime.toString(), readerDtoList.get(0).getDateCreated());
+        assertEquals(dateTime.toString(), readerDtoList.get(0).getLastUpdated());
+        assertEquals(1, readerDtoList.get(0).getTotalBorrowedBooks());
+        assertEquals(1, readerDtoList.get(0).getCurrentlyBorrowedBooks());
+    }
 
 }
 

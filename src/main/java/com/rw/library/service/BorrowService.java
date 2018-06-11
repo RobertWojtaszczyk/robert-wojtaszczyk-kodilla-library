@@ -1,8 +1,6 @@
 package com.rw.library.service;
 
 import com.rw.library.domain.Borrow;
-import com.rw.library.domain.Copy;
-import com.rw.library.domain.Reader;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,7 +14,6 @@ public interface BorrowService extends CRUDService<Borrow> {
     void delete(Long id);
     boolean exists(Long id);
 
-    List<Borrow> findAllByCopyAndReturnDateIsNull(Copy copy);
     List<Borrow> getBorrowsForReaderId(Long readerId);
     void returnBorrowedBook(Long borrowId);
 }
