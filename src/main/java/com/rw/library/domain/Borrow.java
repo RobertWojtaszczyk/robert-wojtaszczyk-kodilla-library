@@ -2,7 +2,6 @@ package com.rw.library.domain;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -10,11 +9,6 @@ import java.util.Objects;
 public class Borrow extends AbstractDomainClass {
 
     public Borrow() {
-    }
-
-    public Borrow(Long id, LocalDate returnDate) {
-        super(id);
-        this.returnDate = returnDate;
     }
 
     public Borrow(Long id, LocalDate borrowDate, Reader reader, Copy copy) {

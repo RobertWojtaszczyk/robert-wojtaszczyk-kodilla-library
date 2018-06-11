@@ -5,7 +5,6 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -17,8 +16,8 @@ public class Book extends AbstractDomainClass {
     public Book() {
     }
 
-    public Book(Long id, LocalDateTime dateCreated, String title, String author) {
-        super(id, dateCreated);
+    public Book(Long id, String title, String author) {
+        super(id);
         this.title = title;
         this.author = author;
     }

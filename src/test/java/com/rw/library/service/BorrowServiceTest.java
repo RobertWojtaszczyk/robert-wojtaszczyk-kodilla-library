@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class BorrowServiceTest {
     @Test
     public void shouldFetchOneBorrow() {
         //Given
-        Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
+        Book book = new Book(1L, "Title", "Author name");
         Copy copy = new Copy(1L, Status.OK, book);
         Reader reader = new Reader(1L, "John", "Doe");
         Borrow borrow = new Borrow(1L, LocalDate.now(), reader, copy);
@@ -50,7 +49,7 @@ public class BorrowServiceTest {
     public void shouldFetchBorrowList() {
         //Given
         List<Borrow> borrows = new ArrayList<>();
-        Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
+        Book book = new Book(1L, "Title", "Author name");
         Copy copy = new Copy(1L, Status.OK, book);
         Reader reader = new Reader(1L, "John", "Doe");
         borrows.add(new Borrow(1L, LocalDate.now(), reader, copy));
@@ -69,7 +68,7 @@ public class BorrowServiceTest {
     @Test
     public void shouldSaveBorrow() {
         //Given
-        Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
+        Book book = new Book(1L, "Title", "Author name");
         Copy copy = new Copy(1L, Status.OK, book);
         Reader reader = new Reader(1L, "John", "Doe");
         Borrow borrow = new Borrow(1L, LocalDate.now(), reader, copy);
@@ -87,7 +86,7 @@ public class BorrowServiceTest {
     @Test
     public void shouldCheckIfBorrowExist() {
         //Given
-        Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
+        Book book = new Book(1L, "Title", "Author name");
         Copy copy = new Copy(1L, Status.OK, book);
         Reader reader = new Reader(1L, "John", "Doe");
         Borrow borrow = new Borrow(1L, LocalDate.now(), reader, copy);

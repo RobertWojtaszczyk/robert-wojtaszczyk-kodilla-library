@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class CopyServiceTest {
     @Test
     public void shouldFetchOneCopy() {
         //Given
-        Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
+        Book book = new Book(1L, "Title", "Author name");
         Copy copy = new Copy(1L, Status.OK, book);
         when(copyRepository.findOne(1L)).thenReturn(copy);
         //When
@@ -44,7 +43,7 @@ public class CopyServiceTest {
     public void shouldFetchCopyList() {
         //Given
         List<Copy> copies = new ArrayList<>();
-        Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
+        Book book = new Book(1L, "Title", "Author name");
         copies.add(new Copy(1L, Status.OK, book));
         when(copyRepository.findAll()).thenReturn(copies);
         //When
@@ -60,7 +59,7 @@ public class CopyServiceTest {
     @Test
     public void shouldSaveCopy() {
         //Given
-        Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
+        Book book = new Book(1L, "Title", "Author name");
         Copy copy = new Copy(1L, Status.OK, book);
         when(copyRepository.save(copy)).thenReturn(copy);
         //When
@@ -75,7 +74,7 @@ public class CopyServiceTest {
     @Test
     public void shouldCheckIfCopyExist() {
         //Given
-        Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
+        Book book = new Book(1L, "Title", "Author name");
         Copy copy = new Copy(1L, Status.OK, book);
         when(copyRepository.exists(copy.getId())).thenReturn(true);
         //When

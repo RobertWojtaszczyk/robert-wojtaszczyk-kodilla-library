@@ -8,7 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class BookServiceTest {
     @Test
     public void shouldFetchOneBook() {
         //Given
-        Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
+        Book book = new Book(1L, "Title", "Author name");
         when(bookRepository.findOne(1L)).thenReturn(book);
         //When
         Book book1 = bookService.findOne(1L);
@@ -41,7 +40,7 @@ public class BookServiceTest {
     public void shouldFetchBookList() {
         //Given
         List<Book> books = new ArrayList<>();
-        books.add(new Book(1L, LocalDateTime.now(), "Title", "Author name"));
+        books.add(new Book(1L, "Title", "Author name"));
         when(bookRepository.findAll()).thenReturn(books);
         //When
         List<Book> booksList = bookService.findAll();
@@ -56,7 +55,7 @@ public class BookServiceTest {
     @Test
     public void shouldSaveBook() {
         //Given
-        Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
+        Book book = new Book(1L, "Title", "Author name");
         when(bookRepository.save(book)).thenReturn(book);
         //When
         Book book1 = bookService.save(book);
@@ -70,7 +69,7 @@ public class BookServiceTest {
     @Test
     public void shouldCheckIfBookExist() {
         //Given
-        Book book = new Book(1L, LocalDateTime.now(), "Title", "Author name");
+        Book book = new Book(1L, "Title", "Author name");
         when(bookRepository.exists(book.getId())).thenReturn(true);
         //When
         Boolean bookExist = bookService.exists(book.getId());

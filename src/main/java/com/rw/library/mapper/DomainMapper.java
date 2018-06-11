@@ -6,7 +6,6 @@ import com.rw.library.service.BorrowService;
 import com.rw.library.service.CopyService;
 import com.rw.library.service.ReaderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -105,7 +104,6 @@ public class DomainMapper {
     public Book mapToBook(final BookDto bookDto) {
         return new Book(
                 bookDto.getId(),
-                null,
                 bookDto.getTitle(),
                 bookDto.getAuthor()
         );
