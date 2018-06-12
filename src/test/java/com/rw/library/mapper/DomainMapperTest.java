@@ -212,6 +212,45 @@ public class DomainMapperTest {
         assertEquals(1L, borrowDtoList.get(0).getReaderId().longValue());
         assertEquals(1L, borrowDtoList.get(0).getCopyId().longValue());
     }
+
+    @Test
+    public void testMapToBorrowReturnBookRequest() {
+        //Given
+        Book book = new Book(1L, "Title", "Author name");
+        Copy copy = new Copy(1L, Status.OK, book);
+        Reader reader = new Reader(1L, "Adam", "Smith");
+        Borrow borrow = new Borrow(1L, LocalDate.now(), reader, copy);
+        borrow.setReturnDate(null);
+        BorrowDto borrowDto = new BorrowDto();
+        borrowDto.setId(1L);
+        borrowDto.setReaderId(1L);
+        borrowDto.setCopyId(1L);
+        borrowDto.setReturnDate(null);
+        when(borrowService.findOne(borrowDto.getId())).thenReturn(borrow);
+        //When
+        Borrow returnedBorrow = domainMapper.mapToBorrowReturnBookRequest(borrowDto.getId());
+        //Then
+        assertEquals(1L, returnedBorrow.getId().longValue());
+        assertEquals(LocalDate.now(), returnedBorrow.getBorrowDate());
+        assertEquals(LocalDate.now(), returnedBorrow.getReturnDate());
+        assertEquals(reader, returnedBorrow.getReader());
+        assertEquals(copy, returnedBorrow.getCopy());
+    }
+
+    @Test
+    public void testMapToBook() {
+        //Given
+        BookDto bookDto = new BookDto();
+        bookDto.setId(1L);
+        bookDto.setTitle("Title");
+        bookDto.setAuthor("Author");
+        //When
+        Book book = domainMapper.mapToBook(bookDto);
+        //Then
+        assertEquals(1L, book.getId().longValue());
+        assertEquals("Title", book.getTitle());
+        assertEquals("Author", book.getAuthor());
+    }
 }
 
 

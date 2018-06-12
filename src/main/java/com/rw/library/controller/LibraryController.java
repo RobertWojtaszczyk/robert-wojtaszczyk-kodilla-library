@@ -27,7 +27,12 @@ public class LibraryController {
     private final DomainObjectValidator domainObjectValidator;
 
     @Autowired
-    public LibraryController(final BookService bookService, final CopyService copyService, final ReaderService readerService, final BorrowService borrowService, final DomainMapper domainMapper, final DomainObjectValidator domainObjectValidator) {
+    public LibraryController(final BookService bookService,
+                             final CopyService copyService,
+                             final ReaderService readerService,
+                             final BorrowService borrowService,
+                             final DomainMapper domainMapper,
+                             final DomainObjectValidator domainObjectValidator) {
         this.bookService = bookService;
         this.copyService = copyService;
         this.readerService = readerService;
@@ -51,7 +56,7 @@ public class LibraryController {
     @RequestMapping(method = RequestMethod.PUT, value = "/returnBorrowedBook")
     public void returnBook(@RequestParam Long borrowId) {
         domainObjectValidator.validateBorrowId(borrowId);
-        borrowService.returnBorrowedBook(borrowId);
+        borrowService.save(domainMapper.mapToBorrowReturnBookRequest(borrowId));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getBooks")
@@ -76,7 +81,6 @@ public class LibraryController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/createBook", consumes = MediaType.APPLICATION_JSON_VALUE)
     public BookDto createBook(@RequestBody BookDto bookDto) {
-        domainObjectValidator.validateBook(bookDto);
         return domainMapper.mapToBookDto(bookService.save(domainMapper.mapToBook(bookDto)));
     }
 
@@ -88,7 +92,6 @@ public class LibraryController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/createReader", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ReaderDto createReader(@RequestBody ReaderDto readerDto) {
-        domainObjectValidator.validateReader(readerDto);
         return domainMapper.mapToReaderDto(readerService.save(domainMapper.mapToReader(readerDto)));
     }
 
@@ -101,14 +104,13 @@ public class LibraryController {
     @RequestMapping(method = RequestMethod.PUT, value = "/updateBook", consumes = MediaType.APPLICATION_JSON_VALUE)
     public BookDto updateBook(@RequestBody BookDto bookDto) {
         domainObjectValidator.validateBookId(bookDto.getId());
-        domainObjectValidator.validateBook(bookDto);
+//        domainObjectValidator.validateBook(bookDto);
         return domainMapper.mapToBookDto(bookService.save(domainMapper.mapToUpdatedBook(bookDto)));
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateReader", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ReaderDto updateReader(@RequestBody ReaderDto readerDto) {
         domainObjectValidator.validateReaderId(readerDto.getId());
-        domainObjectValidator.validateReader(readerDto);
         return domainMapper.mapToReaderDto(readerService.save(domainMapper.mapToUpdatedReader(readerDto)));
     }
 

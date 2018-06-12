@@ -101,6 +101,14 @@ public class DomainMapper {
                 .collect(Collectors.toList());
     }
 
+    public Borrow mapToBorrowReturnBookRequest(final Long borrowId) {
+        Borrow borrow = borrowService.findOne(borrowId);
+        if (borrow.getReturnDate() == null) {
+            borrow.setReturnDate(LocalDate.now());
+        }
+        return borrow;
+    }
+
     public Book mapToBook(final BookDto bookDto) {
         return new Book(
                 bookDto.getId(),
@@ -193,3 +201,4 @@ public class DomainMapper {
                 .collect(Collectors.toList());
     }
 }
+

@@ -15,5 +15,4 @@ public interface BorrowService extends CRUDService<Borrow> {
     boolean exists(Long id);
 
     List<Borrow> getBorrowsForReaderId(Long readerId);
-    void returnBorrowedBook(Long borrowId);
 }

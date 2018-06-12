@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -20,10 +21,12 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.persistence.RollbackException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
@@ -46,10 +49,38 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
+    @ExceptionHandler({ TransactionSystemException.class })
+    public ResponseEntity<Object> handleTransactionSystemException(
+            TransactionSystemException ex, WebRequest request) {
+        List<String> errors = new ArrayList<>();
+        Set<ConstraintViolation<?>> violations = ((ConstraintViolationException)ex.getOriginalException().getCause()).getConstraintViolations();
+        for (ConstraintViolation violation : violations) {
+            errors.add(violation.getRootBeanClass().getName() + " " +
+                    violation.getPropertyPath() + ": " + violation.getMessage());
+        }
+        ApiError apiError = new ApiError(HttpStatus.LENGTH_REQUIRED, ex.getLocalizedMessage(), errors);
+        LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors());
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @ExceptionHandler({ RollbackException.class })
+    public ResponseEntity<Object> handleRollbackException(
+            RollbackException ex, WebRequest request) {
+        List<String> errors = new ArrayList<>();
+        Set<ConstraintViolation<?>> violations = ((ConstraintViolationException)ex.getCause()).getConstraintViolations();
+        for (ConstraintViolation violation : violations) {
+            errors.add(violation.getRootBeanClass().getName() + " " +
+                    violation.getPropertyPath() + ": " + violation.getMessage());
+        }
+        ApiError apiError = new ApiError(HttpStatus.LENGTH_REQUIRED, ex.getLocalizedMessage(), errors);
+        LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors());
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
     @ExceptionHandler({ EmptyResultDataAccessException.class })
     public ResponseEntity<Object> handleEmptyResultDataAccess(
             EmptyResultDataAccessException ex, WebRequest request) {
-        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), "");
+        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), "Empty result");
         LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors());
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }

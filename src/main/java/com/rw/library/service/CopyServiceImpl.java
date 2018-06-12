@@ -30,8 +30,6 @@ public class CopyServiceImpl implements CopyService {
 
     @Override
     public List<Copy> findAll() {
-//        return (List<Copy>) copyRepository.findAll();
-//        return new ArrayList<>((Collection<? extends Copy>) copyRepository.findAll());
         List<Copy> copies = new ArrayList<>();
         copyRepository.findAll().forEach(copies::add);
         return copies;

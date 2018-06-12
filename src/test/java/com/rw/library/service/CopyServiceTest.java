@@ -9,11 +9,18 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -57,6 +64,28 @@ public class CopyServiceTest {
     }
 
     @Test
+    public void shouldFetchPageOfCopyList() {
+        //Given
+        List<Copy> copies = new ArrayList<>();
+        Book book = new Book(1L, "Title", "Author name");
+        copies.add(new Copy(1L, Status.OK, book));
+        Pageable pageable = new PageRequest(0,5);
+        Page<Copy> expectedPage = new PageImpl(copies);
+        when(copyRepository.findAll(any(Pageable.class))).thenReturn(expectedPage);
+        //When
+        Page<Copy> returnedCopiesPage = copyService.findAll(pageable);
+        //Then
+        assertNotNull(returnedCopiesPage);
+        assertEquals(1, returnedCopiesPage.getTotalElements());
+        assertEquals(1, returnedCopiesPage.getTotalPages());
+        assertEquals(1, returnedCopiesPage.getContent().size());
+        assertEquals(1L, returnedCopiesPage.getContent().get(0).getId().longValue());
+        assertEquals(Status.OK, returnedCopiesPage.getContent().get(0).getStatus());
+        assertEquals(book, returnedCopiesPage.getContent().get(0).getBook());
+        assertEquals(expectedPage, returnedCopiesPage);
+    }
+
+    @Test
     public void shouldSaveCopy() {
         //Given
         Book book = new Book(1L, "Title", "Author name");
@@ -81,5 +110,16 @@ public class CopyServiceTest {
         Boolean copyExist = copyService.exists(copy.getId());
         //Then
         assertTrue(copyExist);
+    }
+
+    @Test
+    public void shouldCallDeleteMethod() {
+        //Given
+        Book book = new Book(1L, "Title", "Author name");
+        Copy copy = new Copy(1L, Status.OK, book);
+        //When
+        copyService.delete(copy.getId());
+        //Then
+        verify(copyRepository, times(1)).delete(copy.getId());
     }
 }

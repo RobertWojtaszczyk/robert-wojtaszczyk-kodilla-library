@@ -7,12 +7,19 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.any;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ReaderServiceTest {
@@ -53,6 +60,27 @@ public class ReaderServiceTest {
     }
 
     @Test
+    public void shouldFetchPageOfReaderList() {
+        //Given
+        List<Reader> readers = new ArrayList<>();
+        readers.add(new Reader(1L, "John", "Doe"));
+        Pageable pageable = new PageRequest(0,5);
+        Page<Reader> expectedPage = new PageImpl(readers);
+        when(readerRepository.findAll(any(Pageable.class))).thenReturn(expectedPage);
+        //When
+        Page<Reader> returnedReadersPage = readerService.findAll(pageable);
+        //Then
+        assertNotNull(returnedReadersPage);
+        assertEquals(1, returnedReadersPage.getTotalElements());
+        assertEquals(1, returnedReadersPage.getTotalPages());
+        assertEquals(1, returnedReadersPage.getContent().size());
+        assertEquals(1L, returnedReadersPage.getContent().get(0).getId().longValue());
+        assertEquals("John", returnedReadersPage.getContent().get(0).getFirstname());
+        assertEquals("Doe", returnedReadersPage.getContent().get(0).getLastname());
+        assertEquals(expectedPage, returnedReadersPage);
+    }
+
+    @Test
     public void shouldSaveReader() {
         //Given
         Reader reader = new Reader(1L, "John", "Doe");
@@ -75,5 +103,15 @@ public class ReaderServiceTest {
         Boolean readerExist = readerService.exists(reader.getId());
         //Then
         assertTrue(readerExist);
+    }
+
+    @Test
+    public void shouldCallDeleteMethod() {
+        //Given
+        Reader reader = new Reader(1L, "John", "Doe");
+        //When
+        readerService.delete(reader.getId());
+        //Then
+        verify(readerRepository, times(1)).delete(reader.getId());
     }
 }

@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,13 +56,5 @@ public class BorrowServiceImpl implements BorrowService {
     @Override
     public List<Borrow> getBorrowsForReaderId(final Long readerId) {
         return new ArrayList<>(borrowRepository.findAllByReaderIdAndReturnDateIsNull(readerId));
-    }
-
-    public void returnBorrowedBook(final Long borrowId) {
-        Borrow borrow = findOne(borrowId);
-        if (borrow.getReturnDate() == null) {
-            borrow.setReturnDate(LocalDate.now());
-            save(borrow);
-        }
     }
 }
