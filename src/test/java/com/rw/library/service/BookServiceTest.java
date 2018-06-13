@@ -114,5 +114,4 @@ public class BookServiceTest {
         //Then
         verify(bookRepository, times(1)).delete(book.getId());
     }
-
 }

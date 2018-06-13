@@ -141,4 +141,24 @@ public class BorrowServiceTest {
         //Then
         verify(borrowRepository, times(1)).delete(borrow.getId());
     }
+
+    @Test
+    public void shoudFetchBorrowsForReaderId() {
+        //Given
+        List<Borrow> borrowsByReader = new ArrayList<>();
+        Book book = new Book(1L, "Title", "Author name");
+        Copy copy = new Copy(1L, Status.OK, book);
+        Reader reader = new Reader(1L, "John", "Doe");
+        borrowsByReader.add(new Borrow(1L, LocalDate.now(), reader, copy));
+        when(borrowRepository.findAllByReaderIdAndReturnDateIsNull(reader.getId())).thenReturn(borrowsByReader);
+        //When
+        List<Borrow> returnedBorrowsList = borrowService.getBorrowsForReaderId(1L);
+        //Then
+        assertNotNull(returnedBorrowsList);
+        assertEquals(1, returnedBorrowsList.size());
+        assertEquals(1L, returnedBorrowsList.get(0).getId().longValue());
+        assertEquals(LocalDate.now(), returnedBorrowsList.get(0).getBorrowDate());
+        assertEquals(copy, returnedBorrowsList.get(0).getCopy());
+        assertEquals(reader, returnedBorrowsList.get(0).getReader());
+    }
 }

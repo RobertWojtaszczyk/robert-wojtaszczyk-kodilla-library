@@ -1,7 +1,6 @@
 package com.rw.library.service;
 
 import com.rw.library.domain.Book;
-import com.rw.library.errors.DomainObjectNotFoundException;
 import com.rw.library.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Transactional
 @Service
@@ -25,8 +23,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book findOne(final Long id) {
-        return Optional.of(bookRepository.findOne(id))
-                .orElseThrow(() -> new DomainObjectNotFoundException("Book", id));
+        return bookRepository.findOne(id);
     }
 
     @Override

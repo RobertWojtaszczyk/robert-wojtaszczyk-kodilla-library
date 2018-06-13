@@ -17,7 +17,6 @@ public interface CopyService extends CRUDService<Copy> {
     void delete(Long id);
     boolean exists(Long id);
 
-    List<Copy> getByBook(Book book);
     Page<Copy> findAllByBookId(Pageable pageable, Long bookId);
     List<Copy> getAvailableCopies(@Param("BOOK_ID") Long bookId);
 }

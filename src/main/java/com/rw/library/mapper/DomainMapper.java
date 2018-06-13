@@ -150,7 +150,6 @@ public class DomainMapper {
     public Copy mapToCopy(final CopyDto copyDto) {
         return new Copy(
                 copyDto.getId(),
-                null,
                 copyDto.getStatus(),
                 bookService.findOne(copyDto.getBookId())
         );
@@ -184,7 +183,7 @@ public class DomainMapper {
         return copies.map(this::mapToCopyDto);
     }
 
-    public BorrowedDto mapToBorrowed(final Borrow borrow) {
+    public BorrowedDto mapToBorrowedDto(final Borrow borrow) {
          return new BorrowedDto(
                         borrow.getId(),
                         borrow.getCopy().getBook().getTitle(),
@@ -197,7 +196,7 @@ public class DomainMapper {
 
     public List<BorrowedDto> mapToBorrowedList(final List<Borrow> borrows) {
         return borrows.stream()
-                .map(this::mapToBorrowed)
+                .map(this::mapToBorrowedDto)
                 .collect(Collectors.toList());
     }
 }

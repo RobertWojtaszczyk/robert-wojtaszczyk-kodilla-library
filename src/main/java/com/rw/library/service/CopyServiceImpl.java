@@ -56,11 +56,6 @@ public class CopyServiceImpl implements CopyService {
     }
 
     @Override
-    public List<Copy> getByBook(final Book book) {
-        return copyRepository.getByBook(book);
-    }
-
-    @Override
     public Page<Copy> findAllByBookId(final Pageable pageable, final Long bookId) {
         return copyRepository.findAllByBookId(pageable, bookId);
     }

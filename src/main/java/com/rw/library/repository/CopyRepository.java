@@ -10,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface CopyRepository extends PagingAndSortingRepository<Copy, Long> {
-    List<Copy> getAvailableCopies(@Param("BOOK_ID") Long bookId);
-    List<Copy> getByBook(Book book);
     Page<Copy> findAllByBookId(Pageable pageable, Long bookId);
+    List<Copy> getAvailableCopies(@Param("BOOK_ID") Long bookId);
 }

@@ -26,11 +26,6 @@ public class Copy extends AbstractDomainClass {
         this.book = book;
     }
 
-    public Copy(Long id, LocalDateTime dateCreated, Status status, Book book) {
-        super(id, dateCreated);
-        this.status = status;
-        this.book = book;
-    }
     @Enumerated(EnumType.STRING)
     @NotNull
     private Status status;
