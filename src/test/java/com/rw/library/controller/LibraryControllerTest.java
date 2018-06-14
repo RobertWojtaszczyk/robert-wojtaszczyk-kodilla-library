@@ -69,6 +69,5 @@ public class LibraryControllerTest {
                 .andExpect(jsonPath("$[0].author", is("Author name")))
                 .andExpect(jsonPath("$[0].totalCopiesInLibrary", is(2)))
                 .andExpect(jsonPath("$[0].copiesAvailable", is(1)));
-
     }
 }

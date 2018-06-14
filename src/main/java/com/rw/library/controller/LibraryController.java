@@ -104,7 +104,6 @@ public class LibraryController {
     @RequestMapping(method = RequestMethod.PUT, value = "/updateBook", consumes = MediaType.APPLICATION_JSON_VALUE)
     public BookDto updateBook(@RequestBody BookDto bookDto) {
         domainObjectValidator.validateBookId(bookDto.getId());
-//        domainObjectValidator.validateBook(bookDto);
         return domainMapper.mapToBookDto(bookService.save(domainMapper.mapToUpdatedBook(bookDto)));
     }
 
