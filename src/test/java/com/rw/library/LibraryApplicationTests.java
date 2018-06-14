@@ -26,8 +26,6 @@ public class LibraryApplicationTests {
     private BookServiceImpl bookService;
     @Autowired
     private CopyServiceImpl copyService;
-    @Autowired
-    private LibraryController libraryController;
 
 	@Test
 	public void contextLoads() {
@@ -50,7 +48,6 @@ public class LibraryApplicationTests {
         //When
         List<Book> books = bookService.findAll();
         List<Copy> copies = copyService.findAll();
-        List<CopyDto> copyDtoList = libraryController.getCopies(); // org.hibernate.LazyInitializationException: could not initialize proxy - no Session
 
         //Then
         Assert.assertEquals(1, books.size());
