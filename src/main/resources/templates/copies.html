@@ -191,7 +191,7 @@
             var bookId = $(this).attr("bookId");
             var copyStatus = $(this).find('[name="status"]').val();
 
-            var requestUrl = "http://localhost:8080/v1/library/createCopy";
+            var requestUrl = "http://localhost:8080/v1/copies";
 
             $.ajax({
                 url: requestUrl,
@@ -222,7 +222,7 @@
             var copyStatus = $(this).find('[name="status"]').val();
             var bookId = $(this).attr("bookId");
 
-            var requestUrl = "http://localhost:8080/v1/library/updateCopy";
+            var requestUrl = "http://localhost:8080/v1/copies";
 
             $.ajax({
                 url: requestUrl,
@@ -250,7 +250,7 @@
         function handleDeleteCopy() {
             var parentEl = $(this).parents('#copy-row');
             var copyId = $(this).attr("copy-id");
-            var requestUrl = "http://localhost:8080/v1/library/deleteCopy";
+            var requestUrl = "http://localhost:8080/v1/copies/" + copyId;
 
             $.ajax({
                 url: requestUrl + '/?' + $.param({

@@ -5,6 +5,7 @@ import com.rw.library.domain.BookDto;
 import com.rw.library.mapper.DomainMapper;
 import com.rw.library.service.*;
 import com.rw.library.validator.DomainObjectValidator;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,7 @@ public class LibraryControllerTest {
     @MockBean
     private DomainMapper domainMapper;
 
+    @Ignore
     @Test
     public void shouldFetchTasksList() throws Exception {
         //Given

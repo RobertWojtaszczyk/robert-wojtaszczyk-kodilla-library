@@ -203,7 +203,7 @@
             var bookTitle = $(this).find('[name="title"]').val();
             var bookAuthor = $(this).find('[name="author"]').val();
 
-            var requestUrl = "http://localhost:8080/v1/library/createBook";
+            var requestUrl = "http://localhost:8080/v1/books";
 
             $.ajax({
                 url: requestUrl,
@@ -234,7 +234,7 @@
             var bookTitle = $(this).find('[name="title"]').val();
             var bookAuthor = $(this).find('[name="author"]').val();
 
-            var requestUrl = "http://localhost:8080/v1/library/updateBook";
+            var requestUrl = "http://localhost:8080/v1/books";
 
             $.ajax({
                 url: requestUrl,
@@ -262,12 +262,10 @@
         function handleDeleteBook() {
             var parentEl = $(this).parents('#book-row');
             var bookId = $(this).attr("book-id");
-            var requestUrl = "http://localhost:8080/v1/library/deleteBook";
+            var requestUrl = "http://localhost:8080/v1/books/" + bookId;
 
             $.ajax({
-                url: requestUrl + '/?' + $.param({
-                    bookId: bookId
-                }),
+                url: requestUrl,
                 method: 'DELETE',
                 success: function() {
                     parentEl.slideUp(400, function() { parentEl.remove(); });
