@@ -14,10 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @CrossOrigin(origins = "*")
@@ -66,8 +63,8 @@ public class FrontEndController {
         return modelAndView;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/copies")
-    public ModelAndView copies(@RequestParam(name = "bookId") Long bookId,
+    @RequestMapping(method = RequestMethod.GET, value = "/books/{bookId}/copies")
+    public ModelAndView copies(@PathVariable(name = "bookId") Long bookId,
                                @RequestParam(name = "pageSize", defaultValue = INITIAL_PAGE_SIZE) int pageSize,
                                @RequestParam(name = "page", defaultValue = "0") int page) {
         ModelAndView modelAndView = new ModelAndView("copies");
@@ -75,7 +72,7 @@ public class FrontEndController {
 
         Page<CopyDto> copiesList = domainMapper.mapToCopyDtoPage(copyService.findAllByBookId(new PageRequest(evalPage, pageSize, Sort.Direction.ASC, "id"), bookId));
         Pager pager = new Pager(copiesList.getTotalPages(),copiesList.getNumber(),BUTTONS_TO_SHOW);
-        BookDto book = domainMapper.mapToBookDto(bookService.findOne(bookId));//.orElseThrow(() -> new DomainObjectNotFoundException("Book", bookId)));
+        BookDto book = domainMapper.mapToBookDto(bookService.findOne(bookId));
         modelAndView.addObject("copieslist", copiesList);
         modelAndView.addObject("selectedPageSize", pageSize);
         modelAndView.addObject("pageSizes", PAGE_SIZES);

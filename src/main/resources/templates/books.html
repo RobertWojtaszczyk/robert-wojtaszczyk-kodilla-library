@@ -275,7 +275,7 @@
                     console.log(e.responseJSON.errors);
                     console.log(e.responseJSON.message);
                     console.log(e.responseJSON.status);
-                    parentEl.remove();
+                    // parentEl.remove();
                     alert(e.responseJSON.message);
                 }
             })
@@ -288,7 +288,7 @@
 
         function handleShowCopiesButton() {
             var bookId = $(this).attr("book-id");
-            window.location.href='http://localhost:8080/copies?bookId=' + bookId;
+            window.location.href='http://localhost:8080/books/' + bookId + '/copies';
         }
 
         $('#book-add-form').on('submit', handleBookSubmitRequest);

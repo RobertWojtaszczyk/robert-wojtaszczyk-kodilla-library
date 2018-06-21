@@ -1,5 +1,7 @@
 package com.rw.library.domain;
 
+import org.springframework.hateoas.ResourceSupport;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -32,7 +34,6 @@ public class Book extends AbstractDomainClass {
             fetch = FetchType.LAZY
     )
     private Set<Copy> copies = new HashSet<>();
-
 
     public String getTitle() {
         return title;

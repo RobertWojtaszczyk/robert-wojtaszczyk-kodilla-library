@@ -13,11 +13,6 @@ public class AbstractDomainClass implements DomainObject {
         setId(id);
     }
 
-    public AbstractDomainClass(Long id, LocalDateTime dateCreated) {
-        setId(id);
-        this.dateCreated = dateCreated;
-    }
-
     @Id
     @GeneratedValue
     private Long id;

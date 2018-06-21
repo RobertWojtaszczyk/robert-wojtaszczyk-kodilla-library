@@ -44,7 +44,6 @@ public class LibraryControllerTest {
     @MockBean
     private DomainMapper domainMapper;
 
-    @Ignore
     @Test
     public void shouldFetchTasksList() throws Exception {
         //Given
@@ -63,7 +62,7 @@ public class LibraryControllerTest {
         when(bookService.findAll()).thenReturn(books);
         when(domainMapper.mapToBookDtoList(books)).thenReturn(bookDtos);
         //When & Then
-        mockMvc.perform(get("/v1/library/getBooks").contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/v1/books").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(1)))

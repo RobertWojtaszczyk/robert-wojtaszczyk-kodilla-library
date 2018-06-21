@@ -2,6 +2,7 @@ package com.rw.library.errors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import javax.persistence.RollbackException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -49,16 +51,19 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
+
+    @ExceptionHandler({ DataIntegrityViolationException.class })
+    public ResponseEntity<Object> handleDataIntegrityViolationException(
+            DataIntegrityViolationException ex, WebRequest request) {
+        ApiError apiError = new ApiError(HttpStatus.CONFLICT, ex.getLocalizedMessage(), ex.getRootCause().toString());
+        LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors());
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
     @ExceptionHandler({ TransactionSystemException.class })
     public ResponseEntity<Object> handleTransactionSystemException(
             TransactionSystemException ex, WebRequest request) {
-        List<String> errors = new ArrayList<>();
-        Set<ConstraintViolation<?>> violations = ((ConstraintViolationException)ex.getOriginalException().getCause()).getConstraintViolations();
-        for (ConstraintViolation violation : violations) {
-            errors.add(violation.getRootBeanClass().getName() + " " +
-                    violation.getPropertyPath() + ": " + violation.getMessage());
-        }
-        ApiError apiError = new ApiError(HttpStatus.LENGTH_REQUIRED, ex.getLocalizedMessage(), errors);
+        ApiError apiError = new ApiError(HttpStatus.LENGTH_REQUIRED, ex.getLocalizedMessage(), ex.getOriginalException().getCause().getLocalizedMessage());
         LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors());
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
@@ -66,13 +71,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     @ExceptionHandler({ RollbackException.class })
     public ResponseEntity<Object> handleRollbackException(
             RollbackException ex, WebRequest request) {
-        List<String> errors = new ArrayList<>();
-        Set<ConstraintViolation<?>> violations = ((ConstraintViolationException)ex.getCause()).getConstraintViolations();
-        for (ConstraintViolation violation : violations) {
-            errors.add(violation.getRootBeanClass().getName() + " " +
-                    violation.getPropertyPath() + ": " + violation.getMessage());
-        }
-        ApiError apiError = new ApiError(HttpStatus.LENGTH_REQUIRED, ex.getLocalizedMessage(), errors);
+        ApiError apiError = new ApiError(HttpStatus.LENGTH_REQUIRED, ex.getLocalizedMessage(), ex.getCause().getLocalizedMessage());
         LOGGER.error("Status: " + apiError.getStatus() + "; " + apiError.getMessage() + "; " + apiError.getErrors());
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
