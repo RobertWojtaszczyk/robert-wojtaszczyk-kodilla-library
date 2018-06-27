@@ -1,6 +1,5 @@
 package com.rw.library.service;
 
-import com.rw.library.domain.Book;
 import com.rw.library.domain.Copy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

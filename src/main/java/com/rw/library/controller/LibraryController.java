@@ -8,6 +8,8 @@ import com.rw.library.service.CopyService;
 import com.rw.library.service.ReaderService;
 import com.rw.library.validator.DomainObjectValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,6 +66,11 @@ public class LibraryController {
         return domainMapper.mapToBookDtoList(bookService.findAll());
     }
 
+    @GetMapping(value = "/books", params = {"page", "size"})
+    public Page<BookDto> getBooksPaginated(@RequestParam("page") int page, @RequestParam("size") int size) {
+        return domainMapper.mapToBookDtoPage(bookService.findAll(new PageRequest(page, size)));
+    }
+
     @PostMapping(value = "/books", consumes = MediaType.APPLICATION_JSON_VALUE)
     public BookDto createBook(@RequestBody BookDto bookDto) {
         return domainMapper.mapToBookDto(bookService.save(domainMapper.mapToBook(bookDto)));
@@ -84,6 +91,11 @@ public class LibraryController {
     @GetMapping(value = "/copies")
     public List<CopyDto> getCopies() {
         return domainMapper.mapToCopyDtoList(copyService.findAll());
+    }
+
+    @GetMapping(value = "/copiesPage", params = {"page", "size"})
+    public Page<CopyDto> getCopiesPaginated(@RequestParam("page") int page, @RequestParam("size") int size) {
+        return domainMapper.mapToCopyDtoPage(copyService.findAll(new PageRequest(page, size)));
     }
 
     @PostMapping(value = "/copies", consumes = MediaType.APPLICATION_JSON_VALUE)

@@ -1,7 +1,5 @@
 package com.rw.library.domain;
 
-import org.springframework.hateoas.ResourceSupport;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;

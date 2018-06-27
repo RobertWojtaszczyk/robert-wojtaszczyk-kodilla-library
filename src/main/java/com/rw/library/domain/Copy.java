@@ -1,9 +1,9 @@
 package com.rw.library.domain;
+
 import com.rw.library.domain.definitions.Status;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;

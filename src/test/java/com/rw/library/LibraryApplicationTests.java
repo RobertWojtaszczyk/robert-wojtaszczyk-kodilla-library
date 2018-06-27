@@ -1,9 +1,7 @@
 package com.rw.library;
 
-import com.rw.library.controller.LibraryController;
 import com.rw.library.domain.Book;
 import com.rw.library.domain.Copy;
-import com.rw.library.domain.CopyDto;
 import com.rw.library.domain.definitions.Status;
 import com.rw.library.service.BookServiceImpl;
 import com.rw.library.service.CopyServiceImpl;

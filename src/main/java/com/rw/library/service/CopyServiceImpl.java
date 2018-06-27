@@ -1,6 +1,5 @@
 package com.rw.library.service;
 
-import com.rw.library.domain.Book;
 import com.rw.library.domain.Copy;
 import com.rw.library.repository.CopyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
