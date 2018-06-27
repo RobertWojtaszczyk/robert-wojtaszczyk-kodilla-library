@@ -60,26 +60,26 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="bookslist : ${bookslist}" id="book-row">
+            <tr th:each="booksList : ${booksList}" id="book-row">
                 <div class="top_row">
-                <td th:text="${bookslist.title}"></td>
-                <td th:text="${bookslist.author}"></td>
-                <td th:text="${bookslist.totalCopiesInLibrary}"></td>
+                <td th:text="${booksList.title}"></td>
+                <td th:text="${booksList.author}"></td>
+                <td th:text="${booksList.totalCopiesInLibrary}"></td>
                 <td><button type="button"
                             id="copies-button"
                             class="btn btn-primary btn-condensed"
-                            th:attr="book-id=${bookslist.id}"><i class="glyphicon glyphicon-list"></i>
+                            th:attr="book-id=${booksList.id}"><i class="glyphicon glyphicon-list"></i>
                 </button></td>
                 <td><button type="button"
                             id="update-button"
                             class="btn btn-primary btn-condensed"
-                            th:attr="book-id=${bookslist.id}">
+                            th:attr="book-id=${booksList.id}">
                     <i class="glyphicon glyphicon-edit"></i>
                 </button></td>
                 <td><button type="button"
                             id="delete-button"
                             class="btn btn-primary btn-condensed"
-                            th:attr="book-id=${bookslist.id}">
+                            th:attr="book-id=${booksList.id}">
                     <i class="glyphicon glyphicon-remove"></i>
                 </button></td>
                 </div>
@@ -95,33 +95,33 @@
                     </option>
                 </select>
             </div>
-            <div th:if="${bookslist.totalPages != 1}"
+            <div th:if="${booksList.totalPages != 1}"
                  class="form-group col-md-11 pagination-centered">
                 <ul class="pagination">
-                    <li th:class="${bookslist.number == 0} ? disabled"><a
+                    <li th:class="${booksList.number == 0} ? disabled"><a
                             class="pageLink"
                             th:href="@{/books(pageSize=${selectedPageSize}, page=1, sortBy=${selectedSortingField})}">«</a>
                     </li>
-                    <li th:class="${bookslist.number == 0} ? disabled"><a
+                    <li th:class="${booksList.number == 0} ? disabled"><a
                             class="pageLink"
-                            th:href="@{/books(pageSize=${selectedPageSize}, page=${bookslist.number}, sortBy=${selectedSortingField})}">←</a>
+                            th:href="@{/books(pageSize=${selectedPageSize}, page=${booksList.number}, sortBy=${selectedSortingField})}">←</a>
                     </li>
                     <li
-                            th:class="${bookslist.number == (page - 1)} ? 'active pointer-disabled'"
+                            th:class="${booksList.number == (page - 1)} ? 'active pointer-disabled'"
                             th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
                         <a class="pageLink"
                            th:href="@{/books(pageSize=${selectedPageSize}, page=${page}, sortBy=${selectedSortingField})}"
                            th:text="${page}"></a>
                     </li>
                     <li
-                            th:class="${bookslist.number + 1 == bookslist.totalPages} ? disabled">
+                            th:class="${booksList.number + 1 == booksList.totalPages} ? disabled">
                         <a class="pageLink"
-                           th:href="@{/books(pageSize=${selectedPageSize}, page=${bookslist.number + 2}, sortBy=${selectedSortingField})}">→</a>
+                           th:href="@{/books(pageSize=${selectedPageSize}, page=${booksList.number + 2}, sortBy=${selectedSortingField})}">→</a>
                     </li>
                     <li
-                            th:class="${bookslist.number + 1 == bookslist.totalPages} ? disabled">
+                            th:class="${booksList.number + 1 == booksList.totalPages} ? disabled">
                         <a class="pageLink"
-                           th:href="@{/books(pageSize=${selectedPageSize}, page=${bookslist.totalPages}, sortBy=${selectedSortingField})}">»</a>
+                           th:href="@{/books(pageSize=${selectedPageSize}, page=${booksList.totalPages}, sortBy=${selectedSortingField})}">»</a>
                     </li>
                 </ul>
             </div>

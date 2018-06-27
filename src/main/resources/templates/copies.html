@@ -57,23 +57,23 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="copieslist : ${copieslist}" id="copy-row">
+            <tr th:each="copiesList : ${copiesList}" id="copy-row">
                 <div class="top_row">
-                    <td th:text="${copieslist.id}">Text ...</td>
-                    <td th:text="${copieslist.dateCreated}">Text ...</td>
-                    <td th:text="${copieslist.lastUpdated}">Text ...</td>
-                    <td th:text="${copieslist.status}">Text ...</td>
+                    <td th:text="${copiesList.id}">Text ...</td>
+                    <td th:text="${copiesList.dateCreated}">Text ...</td>
+                    <td th:text="${copiesList.lastUpdated}">Text ...</td>
+                    <td th:text="${copiesList.status}">Text ...</td>
 
                     <td><button type="button"
                                 id="update-button"
                                 class="btn btn-primary btn-condensed"
-                                th:attr="copy-id=${copieslist.id}">
+                                th:attr="copy-id=${copiesList.id}">
                         <i class="glyphicon glyphicon-edit"></i>
                     </button></td>
                     <td><button type="button"
                                 id="delete-button"
                                 class="btn btn-primary btn-condensed"
-                                th:attr="copy-id=${copieslist.id}">
+                                th:attr="copy-id=${copiesList.id}">
                         <i class="glyphicon glyphicon-remove"></i>
                     </button></td>
                 </div>
@@ -89,33 +89,33 @@
                     </option>
                 </select>
             </div>
-            <div th:if="${copieslist.totalPages != 1}"
+            <div th:if="${copiesList.totalPages != 1}"
                  class="form-group col-md-11 pagination-centered">
                 <ul class="pagination">
-                    <li th:class="${copieslist.number == 0} ? disabled"><a
+                    <li th:class="${copiesList.number == 0} ? disabled"><a
                             class="pageLink"
-                            th:href="@{/copies(bookId=${book.id}, pageSize=${selectedPageSize}, page=1)}">«</a>
+                            th:href="@{'/books/' + ${book.id} + '/copies'(pageSize=${selectedPageSize}, page=1)}">«</a>
                     </li>
-                    <li th:class="${copieslist.number == 0} ? disabled"><a
+                    <li th:class="${copiesList.number == 0} ? disabled"><a
                             class="pageLink"
-                            th:href="@{/copies(bookId=${book.id}, pageSize=${selectedPageSize}, page=${copieslist.number})}">←</a>
+                            th:href="@{'/books/' + ${book.id} + '/copies'(pageSize=${selectedPageSize}, page=${copiesList.number})}">←</a>
                     </li>
                     <li
-                            th:class="${copieslist.number == (page - 1)} ? 'active pointer-disabled'"
+                            th:class="${copiesList.number == (page - 1)} ? 'active pointer-disabled'"
                             th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
                         <a class="pageLink"
-                           th:href="@{/copies(bookId=${book.id}, pageSize=${selectedPageSize}, page=${page})}"
+                           th:href="@{'/books/' + ${book.id} + '/copies'(pageSize=${selectedPageSize}, page=${page})}"
                            th:text="${page}"></a>
                     </li>
                     <li
-                            th:class="${copieslist.number + 1 == copieslist.totalPages} ? disabled">
+                            th:class="${copiesList.number + 1 == copiesList.totalPages} ? disabled">
                         <a class="pageLink"
-                           th:href="@{/copies(bookId=${book.id}, pageSize=${selectedPageSize}, page=${copieslist.number + 2})}">→</a>
+                           th:href="@{'/books/' + ${book.id} + '/copies'(pageSize=${selectedPageSize}, page=${copiesList.number + 2})}">→</a>
                     </li>
                     <li
-                            th:class="${copieslist.number + 1 == copieslist.totalPages} ? disabled">
+                            th:class="${copiesList.number + 1 == copiesList.totalPages} ? disabled">
                         <a class="pageLink"
-                           th:href="@{/copies(bookId=${book.id}, pageSize=${selectedPageSize}, page=${copieslist.totalPages})}">»</a>
+                           th:href="@{'/books/' + ${book.id} + '/copies'(pageSize=${selectedPageSize}, page=${copiesList.totalPages})}">»</a>
                     </li>
                 </ul>
             </div>
@@ -284,7 +284,7 @@
     function changePageAndSize() {
 
         $('#pageSizeSelect').change(function(evt) {
-            window.location.replace("/copies?bookId=" + $(this).attr("bookId") + "&pageSize=" + this.value + "&page=1");
+            window.location.replace("/books/" + $(this).attr("bookId") + "/copies" + "?pageSize=" + this.value + "&page=1");
         });
     }
 

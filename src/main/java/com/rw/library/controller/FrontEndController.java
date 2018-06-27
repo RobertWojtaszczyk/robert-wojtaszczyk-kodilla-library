@@ -54,7 +54,7 @@ public class FrontEndController {
 
         Page<BookDto> booksList = domainMapper.mapToBookDtoPage(bookService.findAll(new PageRequest(evalPage, pageSize, Sort.Direction.ASC, sortBy)));
         Pager pager = new Pager(booksList.getTotalPages(),booksList.getNumber(),BUTTONS_TO_SHOW);
-        modelAndView.addObject("bookslist", booksList);
+        modelAndView.addObject("booksList", booksList);
         modelAndView.addObject("selectedPageSize", pageSize);
         modelAndView.addObject("pageSizes", PAGE_SIZES);
         modelAndView.addObject("pager", pager);
@@ -73,7 +73,7 @@ public class FrontEndController {
         Page<CopyDto> copiesList = domainMapper.mapToCopyDtoPage(copyService.findAllByBookId(new PageRequest(evalPage, pageSize, Sort.Direction.ASC, "id"), bookId));
         Pager pager = new Pager(copiesList.getTotalPages(),copiesList.getNumber(),BUTTONS_TO_SHOW);
         BookDto book = domainMapper.mapToBookDto(bookService.findOne(bookId));
-        modelAndView.addObject("copieslist", copiesList);
+        modelAndView.addObject("copiesList", copiesList);
         modelAndView.addObject("selectedPageSize", pageSize);
         modelAndView.addObject("pageSizes", PAGE_SIZES);
         modelAndView.addObject("pager", pager);
